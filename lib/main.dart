@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/customFormField.dart';
-import 'package:test_app/paddingButton.dart';
+
+import 'customFormField.dart';
+import 'paddingButton.dart';
 import 'xmlRequest.dart';
 import 'dropDowns.dart';
 import 'register.dart';
@@ -34,14 +35,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  final codeController = TextEditingController();
 
   void _loginUser() async {
     var body = new Map<String, dynamic>();
     body["function"] = 'loginUser';
     body["username"] = usernameController.text;
     body["password"] = passwordController.text;
-    body["code"] = codeController.text;
 
     Map<String, dynamic> response = await XmlRequest.createPost(body);
     ShowDialog dialog = new ShowDialog();
@@ -56,35 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       );
-    } else if (response['success'] == false) {
-      codeController.text = '';
-      dialog.showCustomDialog(
-        'Bitte Registrierungscode eingeben',
-        () {
-          if (codeController.text != 'null') {
-            Navigator.of(context).pop();
-            _loginUser();
-          }
-        },
-        context,
-        [
-          new TextFormField(
-            style: new TextStyle(
-              fontSize: 20.0,
-              height: 2.0,
-              color: Colors.black,
-            ),
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 40.0,
-                vertical: 10.0,
-              ),
-            ),
-            autocorrect: false,
-            controller: codeController,
-          )
-        ],
-      );
     } else {
       dialog.showCustomDialog(
         'Fehler',
@@ -94,7 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
         context,
         [Text(response['message'])],
       );
-      codeController.text = 'null';
     }
   }
 
@@ -107,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    codeController.text = 'null';
     CustomFormField field = new CustomFormField();
     PaddingButton button = new PaddingButton();
 

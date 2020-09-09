@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/tableContainer.dart';
-import 'package:test_app/tableInkwell.dart';
+
+import 'tableContainer.dart';
+import 'tableInkwell.dart';
 
 class TimeTable extends StatefulWidget {
   TimeTable({Key key, this.title, this.data, this.isCatalog}) : super(key: key);
