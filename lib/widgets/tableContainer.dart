@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
-class TableContainer {
-  Container setTableContainer(
-      String childText, Color textStyleColor, Color decorationColor) {
+class TableContainer extends StatelessWidget {
+  final String childText;
+  final Color textStyleColor;
+  final Color decorationColor;
+
+  TableContainer(this.childText, this.textStyleColor, this.decorationColor);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       child: Center(
         child: Text(

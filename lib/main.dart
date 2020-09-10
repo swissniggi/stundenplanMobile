@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'customFormField.dart';
-import 'paddingButton.dart';
+import 'widgets/customFormField.dart';
+import 'widgets/paddingButton.dart';
 import 'xmlRequest.dart';
 import 'dropDowns.dart';
 import 'register.dart';
@@ -76,9 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    CustomFormField field = new CustomFormField();
-    PaddingButton button = new PaddingButton();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xfffbe400),
@@ -93,13 +90,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            field.setLoginField('Benutzername', usernameController),
-            field.setLoginField('Passwort', passwordController),
+            CustomFormField(
+              'Benutzername',
+              usernameController,
+            ),
+            CustomFormField(
+              'Passwort',
+              passwordController,
+              obscureText: true,
+            ),
             new Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                button.setPaddingButton('Login', _loginUser),
-                button.setPaddingButton('Registrieren', _registerUser)
+                PaddingButton('Login', _loginUser),
+                PaddingButton('Registrieren', _registerUser)
               ],
             ),
           ],

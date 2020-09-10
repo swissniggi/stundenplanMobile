@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'customFormField.dart';
+import 'widgets/customFormField.dart';
 import 'main.dart';
-import 'paddingButton.dart';
+import 'widgets/paddingButton.dart';
 import 'showDialog.dart';
 import 'xmlRequest.dart';
 
@@ -51,9 +51,6 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    CustomFormField field = new CustomFormField();
-    PaddingButton button = new PaddingButton();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -63,13 +60,24 @@ class _RegisterState extends State<Register> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            field.setLoginField('Benutzername', usernameController),
-            field.setLoginField('Email', usermailController),
-            field.setLoginField('Passwort', passwordController),
+            CustomFormField(
+              'Benutzername',
+              usernameController,
+            ),
+            CustomFormField(
+              'Email',
+              usermailController,
+              textInputType: TextInputType.emailAddress,
+            ),
+            CustomFormField(
+              'Passwort',
+              passwordController,
+              obscureText: true,
+            ),
             new Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                button.setPaddingButton('Registrieren', _registerUser),
+                PaddingButton('Registrieren', _registerUser),
               ],
             ),
           ],

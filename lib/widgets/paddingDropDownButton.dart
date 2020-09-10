@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'customText.dart';
 
-class PaddingDropDownButton {
+class PaddingDropDownButton extends StatelessWidget {
+  final int index;
+  final Function onChangedFunc;
+
+  PaddingDropDownButton(this.index, this.onChangedFunc);
+
   static List<String> selectedValues = [
     ' -- Wählen Sie ein Fach aus -- ',
     ' -- Wählen Sie ein Fach aus -- ',
@@ -25,7 +30,8 @@ class PaddingDropDownButton {
     'Wirtschaft, Arbeit, Haushalt'
   ];
 
-  Padding setPaddingDropDownButton(int index, Function onChangedFunc) {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(25.0),
       child: new DropdownButton<String>(

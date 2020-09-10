@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'dragAndDrop.dart';
-import 'tableContainer.dart';
+import 'widgets/tableContainer.dart';
 
 class TableInkwell {
   static Map<Widget, int> wellIds = new Map<Widget, int>();
@@ -12,14 +12,13 @@ class TableInkwell {
       Map<dynamic, dynamic> tableData,
       List<Color> colors,
       List<String> pointerList) {
-    TableContainer container = new TableContainer();
     List<Widget> wells = new List<Widget>();
 
     for (var i = 0; i < pointerList.length; i++) {
       var newWell = InkWell(
         onTap: () => DragAndDrop.getTargetCells(
             sem.toString() + '.' + year.toString() + '.' + pointerList[i]),
-        child: container.setTableContainer(
+        child: TableContainer(
           tableData[pointerList[i]] == null
               ? ''
               : tableData[pointerList[i]]['name'],

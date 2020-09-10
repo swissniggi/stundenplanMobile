@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'paddingDropDownButton.dart';
-import 'paddingRadio.dart';
+import 'widgets/paddingDropDownButton.dart';
+import 'widgets/paddingRadio.dart';
 import 'showDialog.dart';
-import 'simpleText.dart';
+import 'widgets/simpleText.dart';
 import 'xmlRequest.dart';
 import 'timeTable.dart';
 
@@ -53,14 +53,11 @@ class _DropDownsState extends State<DropDowns> {
     }
   }
 
-  Padding _createDropDown(var index) {
-    PaddingDropDownButton padding = new PaddingDropDownButton();
-    var dropdownButton = padding.setPaddingDropDownButton(
+  PaddingDropDownButton _createDropDown(var index) {
+    return PaddingDropDownButton(
         index,
         (String newValue) => setState(
             () => PaddingDropDownButton.selectedValues[index] = newValue));
-
-    return dropdownButton;
   }
 
   void _prepareCatalogData() async {
@@ -151,9 +148,6 @@ class _DropDownsState extends State<DropDowns> {
 
   @override
   Widget build(BuildContext context) {
-    PaddingRadio padding = new PaddingRadio();
-    SimpleText text = new SimpleText();
-
     return Scaffold(
       appBar: AppBar(
         leading: new IconButton(
@@ -171,16 +165,16 @@ class _DropDownsState extends State<DropDowns> {
             _createDropDown(1),
             _createDropDown(2),
             Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-              padding.setPaddingRadio(0, _groupValue, context,
+              PaddingRadio(0, _groupValue,
                   (value) => setState(() => _groupValue = value)),
-              text.setSimpleText('Muttenz')
+              SimpleText('Muttenz')
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                padding.setPaddingRadio(1, _groupValue, context,
+                PaddingRadio(1, _groupValue,
                     (value) => setState(() => _groupValue = value)),
-                text.setSimpleText('Windisch')
+                SimpleText('Windisch')
               ],
             ),
             _createCatalogs(),

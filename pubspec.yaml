@@ -1,5 +1,10 @@
-name: test_app
-description: A new Flutter application.
+name: NAWI
+description: Stundenplanapp für die pädagogische Hochschule
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/img/fhnw.jpg"
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,10 +24,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.0
   http: ^0.12.0+2
 
 dev_dependencies:

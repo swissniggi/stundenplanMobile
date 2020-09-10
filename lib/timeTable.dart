@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'tableContainer.dart';
+import 'widgets/tableContainer.dart';
 import 'tableInkwell.dart';
 
 class TimeTable extends StatefulWidget {
@@ -80,7 +80,6 @@ class _TimeTableState extends State<TimeTable> {
       }
     });
 
-    TableContainer container = new TableContainer();
     TableInkwell well = new TableInkwell();
 
     GridView table = new GridView.count(
@@ -89,37 +88,29 @@ class _TimeTableState extends State<TimeTable> {
       shrinkWrap: false,
       crossAxisCount: 6,
       children: <Widget>[
-        container.setTableContainer(
-            sem.toString() + ' ' + year.toString() + '\n' + location,
-            Colors.orange,
-            Colors.grey),
-        container.setTableContainer('Mo', Colors.black, Color(0xFFBE6E6FA)),
-        container.setTableContainer('Di', Colors.black, Color(0xFFBE6E6FA)),
-        container.setTableContainer('Mi', Colors.black, Color(0xFFBE6E6FA)),
-        container.setTableContainer('Do', Colors.black, Color(0xFFBE6E6FA)),
-        container.setTableContainer('Fr', Colors.black, Color(0xFFBE6E6FA)),
-        container.setTableContainer(
-            '08:00 - 10:00', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer(sem.toString() + ' ' + year.toString() + '\n' + location,
+            Colors.orange, Colors.grey),
+        TableContainer('Mo', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('Di', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('Mi', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('Do', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('Fr', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('08:00 - 10:00', Colors.black, Color(0xFFBE6E6FA)),
         ...well.setTableInkwells(
             sem, year, tableData, colors, ['1.8', '2.8', '3.8', '4.8', '5.8']),
-        container.setTableContainer(
-            '10:00 - 12:00', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('10:00 - 12:00', Colors.black, Color(0xFFBE6E6FA)),
         ...well.setTableInkwells(sem, year, tableData, colors,
             ['1.10', '2.10', '3.10', '4.10', '5.10']),
-        container.setTableContainer(
-            '12:00 - 14:00', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('12:00 - 14:00', Colors.black, Color(0xFFBE6E6FA)),
         ...well.setTableInkwells(sem, year, tableData, colors,
             ['1.12', '2.12', '3.12', '4.12', '5.12']),
-        container.setTableContainer(
-            '14:00 - 16:00', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('14:00 - 16:00', Colors.black, Color(0xFFBE6E6FA)),
         ...well.setTableInkwells(sem, year, tableData, colors,
             ['1.14', '2.14', '3.14', '4.14', '5.14']),
-        container.setTableContainer(
-            '16:00 - 18:00', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('16:00 - 18:00', Colors.black, Color(0xFFBE6E6FA)),
         ...well.setTableInkwells(sem, year, tableData, colors,
             ['1.16', '2.16', '3.16', '4.16', '5.16']),
-        container.setTableContainer(
-            '18:00 - 20:00', Colors.black, Color(0xFFBE6E6FA)),
+        TableContainer('18:00 - 20:00', Colors.black, Color(0xFFBE6E6FA)),
         ...well.setTableInkwells(sem, year, tableData, colors,
             ['1.18', '2.18', '3.18', '4.18', '5.18']),
       ],
