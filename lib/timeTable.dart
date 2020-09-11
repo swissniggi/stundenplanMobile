@@ -257,20 +257,17 @@ class _TimeTableState extends State<TimeTable> {
       ),
       body: Container(
         child: ListView(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: false,
-            children: <Widget>[
-              configureTables(),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: new RaisedButton(
-                  color: Colors.blue,
-                  onPressed: _saveTimeTables,
-                  child: Text('Stundenpläne speichern',
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                ),
-              ),
-            ]),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: false,
+          children: [
+            configureTables(),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.save),
+        onPressed: _saveTimeTables,
       ),
     );
   }
