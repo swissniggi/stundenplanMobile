@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MaterialPageRoute(
           builder: (context) => DropDowns(
             title: 'Stundenplan FHNW',
-            username: usernameController.text,
+            username: response['username'],
           ),
         ),
       );
