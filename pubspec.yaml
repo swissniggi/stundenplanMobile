@@ -4,7 +4,7 @@ description: Stundenplanapp für die pädagogische Hochschule
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "lib/img/fhnw.jpg"
+  image_path: "assets/img/fhnw.jpg"
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -48,7 +48,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/img/fhnw.jpg
+    - assets/img/fhnw.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

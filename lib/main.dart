@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.all(8),
-          child: Image.asset("lib/img/fhnw.jpg"),
+          child: Image.asset("assets/img/fhnw.jpg"),
         ),
       ),
       body: Center(
