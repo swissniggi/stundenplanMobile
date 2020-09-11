@@ -1,3 +1,4 @@
+import 'package:NAWI/widgets/paddingButton.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/paddingDropDownButton.dart';
@@ -178,15 +179,7 @@ class _DropDownsState extends State<DropDowns> {
               ],
             ),
             _createCatalogs(),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: new RaisedButton(
-                color: Color(0xfffbe400),
-                onPressed: _createTimeTables,
-                child: Text('Stundenplan erstellen',
-                    style: TextStyle(color: Colors.white, fontSize: 22)),
-              ),
-            ),
+            PaddingButton('Stundenplan erstellen', _createTimeTables),
           ],
         ),
       ),
