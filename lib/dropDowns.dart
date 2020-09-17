@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'widgets/paddingDropDownButton.dart';
 import 'widgets/paddingRadio.dart';
-import 'showDialog.dart';
+import 'widgets/showDialog.dart';
 import 'widgets/simpleText.dart';
 import 'xmlRequest.dart';
 import 'timeTable.dart';
@@ -122,7 +122,7 @@ class _DropDownsState extends State<DropDowns> {
           MaterialPageRoute(
               builder: (context) => TimeTable(
                   title: 'Stundenplan FHNW',
-                  data: response,
+                  fullData: response,
                   isCatalog: isCatalog)));
     } else {
       ShowDialog dialog = new ShowDialog();
@@ -151,8 +151,8 @@ class _DropDownsState extends State<DropDowns> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: new IconButton(
-          icon: new Icon(Icons.exit_to_app),
+        leading: IconButton(
+          icon: Icon(Icons.exit_to_app),
           onPressed: _logoutUser,
         ),
         title: Text(widget.title),
@@ -161,7 +161,7 @@ class _DropDownsState extends State<DropDowns> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             _createDropDown(0),
             _createDropDown(1),
             _createDropDown(2),
@@ -172,7 +172,7 @@ class _DropDownsState extends State<DropDowns> {
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
+              children: [
                 PaddingRadio(1, _groupValue,
                     (value) => setState(() => _groupValue = value)),
                 SimpleText('Windisch')

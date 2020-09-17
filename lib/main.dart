@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 import 'xmlRequest.dart';
 import 'dropDowns.dart';
 import 'register.dart';
-import 'showDialog.dart';
+import 'widgets/showDialog.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitUp,
+  ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -89,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             CustomFormField(
               'Benutzername',
               usernameController,
@@ -99,9 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
               passwordController,
               obscureText: true,
             ),
-            new Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: [
                 PaddingButton('Login', _loginUser),
                 PaddingButton('Registrieren', _registerUser)
               ],

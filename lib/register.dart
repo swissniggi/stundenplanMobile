@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'widgets/customFormField.dart';
 import 'main.dart';
 import 'widgets/paddingButton.dart';
-import 'showDialog.dart';
+import 'widgets/showDialog.dart';
 import 'xmlRequest.dart';
 
 class Register extends StatefulWidget {
@@ -59,7 +59,7 @@ class _RegisterState extends State<Register> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             CustomFormField(
               'Benutzername',
               usernameController,
@@ -74,9 +74,9 @@ class _RegisterState extends State<Register> {
               passwordController,
               obscureText: true,
             ),
-            new Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: [
                 PaddingButton('Registrieren', _registerUser),
               ],
             ),

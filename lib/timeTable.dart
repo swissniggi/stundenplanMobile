@@ -1,13 +1,15 @@
+import 'package:NAWI/cellIdController.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/tableContainer.dart';
-import 'tableInkwell.dart';
+import 'widgets/tableInkwell.dart';
 
 class TimeTable extends StatefulWidget {
-  TimeTable({Key key, this.title, this.data, this.isCatalog}) : super(key: key);
+  TimeTable({Key key, this.title, this.fullData, this.isCatalog})
+      : super(key: key);
 
   final String title;
-  final Map<String, dynamic> data;
+  final Map<String, dynamic> fullData;
   final bool isCatalog;
 
   @override
@@ -80,14 +82,12 @@ class _TimeTableState extends State<TimeTable> {
       }
     });
 
-    TableInkwell well = new TableInkwell();
-
     GridView table = new GridView.count(
       primary: false,
       padding: const EdgeInsets.all(5),
       shrinkWrap: false,
       crossAxisCount: 6,
-      children: <Widget>[
+      children: [
         TableContainer(sem.toString() + ' ' + year.toString() + '\n' + location,
             Colors.orange, Colors.grey),
         TableContainer('Mo', Colors.black, Color(0xFFBE6E6FA)),
@@ -96,23 +96,65 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('Do', Colors.black, Color(0xFFBE6E6FA)),
         TableContainer('Fr', Colors.black, Color(0xFFBE6E6FA)),
         TableContainer('08:00 - 10:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...well.setTableInkwells(
-            sem, year, tableData, colors, ['1.8', '2.8', '3.8', '4.8', '5.8']),
+        ...TableInkwell(
+          context,
+          sem,
+          year,
+          location,
+          tableData,
+          colors,
+          CellIdController.pointers[0],
+        ).buildList(),
         TableContainer('10:00 - 12:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...well.setTableInkwells(sem, year, tableData, colors,
-            ['1.10', '2.10', '3.10', '4.10', '5.10']),
+        ...TableInkwell(
+          context,
+          sem,
+          year,
+          location,
+          tableData,
+          colors,
+          CellIdController.pointers[1],
+        ).buildList(),
         TableContainer('12:00 - 14:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...well.setTableInkwells(sem, year, tableData, colors,
-            ['1.12', '2.12', '3.12', '4.12', '5.12']),
+        ...TableInkwell(
+          context,
+          sem,
+          year,
+          location,
+          tableData,
+          colors,
+          CellIdController.pointers[2],
+        ).buildList(),
         TableContainer('14:00 - 16:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...well.setTableInkwells(sem, year, tableData, colors,
-            ['1.14', '2.14', '3.14', '4.14', '5.14']),
+        ...TableInkwell(
+          context,
+          sem,
+          year,
+          location,
+          tableData,
+          colors,
+          CellIdController.pointers[3],
+        ).buildList(),
         TableContainer('16:00 - 18:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...well.setTableInkwells(sem, year, tableData, colors,
-            ['1.16', '2.16', '3.16', '4.16', '5.16']),
+        ...TableInkwell(
+          context,
+          sem,
+          year,
+          location,
+          tableData,
+          colors,
+          CellIdController.pointers[4],
+        ).buildList(),
         TableContainer('18:00 - 20:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...well.setTableInkwells(sem, year, tableData, colors,
-            ['1.18', '2.18', '3.18', '4.18', '5.18']),
+        ...TableInkwell(
+          context,
+          sem,
+          year,
+          location,
+          tableData,
+          colors,
+          CellIdController.pointers[5],
+        ).buildList(),
       ],
     );
 
@@ -150,7 +192,7 @@ class _TimeTableState extends State<TimeTable> {
     var vorschlag = 0;
     Map<String, Map> pruefungen = {};
     var veranstaltungen = {};
-    for (var zeile in widget.data['1']) {
+    for (var zeile in widget.fullData['1']) {
       var exam = {};
       if (pruefung == zeile['Pruefung']) {
         veranstaltungen[zeile] = zeile['Veranstaltung'];
@@ -186,7 +228,7 @@ class _TimeTableState extends State<TimeTable> {
 
   Map<String, Map> updateTable() {
     Map<String, Map> allData = {};
-    for (var zeile in widget.data['0']) {
+    for (var zeile in widget.fullData['0']) {
       var fach = zeile['Fach'];
       var year = int.parse(zeile['Jahr']);
       var sem = zeile['Semester'];

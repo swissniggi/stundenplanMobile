@@ -11,12 +11,12 @@ class ShowDialog {
           title: Text(titleText),
           content: SingleChildScrollView(
             child: ListBody(
-              children: <Widget>[
+              children: [
                 ...bodyChildren,
               ],
             ),
           ),
-          actions: <Widget>[
+          actions: [
             FlatButton(
               child: Text('OK'),
               onPressed: onPressedFunc,

@@ -15,8 +15,8 @@ class CustomFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new TextFormField(
-        style: new TextStyle(fontSize: 20.0, height: 2.0, color: Colors.black),
+    return TextFormField(
+        style: TextStyle(fontSize: 20.0, height: 2.0, color: Colors.black),
         decoration: InputDecoration(
           labelText: lableText,
           contentPadding:

@@ -12,7 +12,7 @@ class PaddingButton extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: ButtonTheme(
         minWidth: 140,
-        child: new RaisedButton(
+        child: RaisedButton(
           onPressed: onPressedFunc,
           child: Text(
             buttonText,

@@ -34,7 +34,7 @@ class PaddingDropDownButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(25.0),
-      child: new DropdownButton<String>(
+      child: DropdownButton<String>(
         value: selectedValues[index],
         icon: Icon(Icons.arrow_drop_down),
         iconSize: 28,
