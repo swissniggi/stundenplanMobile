@@ -1,5 +1,5 @@
 import 'package:NAWI/cellIdController.dart';
-import 'package:NAWI/widgets/NawiDrawer.dart';
+import 'package:NAWI/widgets/nawiDrawer.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/tableContainer.dart';
