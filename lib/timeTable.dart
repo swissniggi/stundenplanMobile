@@ -1,5 +1,5 @@
 import 'package:NAWI/cellIdController.dart';
-import 'package:NAWI/widgets/leftDrawer.dart';
+import 'package:NAWI/widgets/NawiDrawer.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/tableContainer.dart';
@@ -298,7 +298,7 @@ class _TimeTableState extends State<TimeTable> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      drawer: LeftDrawer(),
+      drawer: NawiDrawer(),
       body: Container(
         child: ListView(
           scrollDirection: Axis.vertical,

@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../xmlRequest.dart';
 
-class LeftDrawer extends StatelessWidget {
+class NawiDrawer extends StatelessWidget {
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
