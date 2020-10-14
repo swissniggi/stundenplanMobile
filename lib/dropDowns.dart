@@ -1,3 +1,4 @@
+import 'package:NAWI/main.dart';
 import 'package:NAWI/widgets/paddingButton.dart';
 import 'package:flutter/material.dart';
 
@@ -117,7 +118,7 @@ class _DropDownsState extends State<DropDowns> {
 
       Map<String, dynamic> response = await XmlRequest.createPost(body);
 
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => TimeTable(
@@ -144,7 +145,10 @@ class _DropDownsState extends State<DropDowns> {
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
     XmlRequest.createPost(body);
-    Navigator.of(context).pop();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyHomePage(title: 'Stundenplan FHNW')));
   }
 
   @override

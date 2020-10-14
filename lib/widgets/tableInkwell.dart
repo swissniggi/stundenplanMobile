@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../cellIdController.dart';
-import '../dragAndDrop.dart';
+import '../openTargetCellList.dart';
 import 'tableContainer.dart';
 
 class TableInkwell {
@@ -31,9 +31,9 @@ class TableInkwell {
         onLongPress: tableData[pointerList[i].id] == null
             ? () => {}
             : () {
-                String modulGroup = tableData[pointerList[i].id]['name'];
-                DragAndDrop dAD = new DragAndDrop();
-                dAD.getTargetCells(modulGroup, tableData, ctx);
+                String module = tableData[pointerList[i].id]['name'];
+                OpenTargetCellList dAD = new OpenTargetCellList();
+                dAD.getTargetCells(module, tableData, ctx);
               },
         child: TableContainer(
           tableData[pointerList[i].id] == null
@@ -43,10 +43,18 @@ class TableInkwell {
           tableData[pointerList[i].id] == null
               ? colors[0]
               : colors[tableData[pointerList[i].id]['typ']],
+          pointerList[i].id +
+              '.' +
+              location +
+              '.' +
+              sem +
+              '.' +
+              year.toString(),
         ),
       );
 
       wells.add(newWell);
+      CellIdController.cells.add(newWell.child);
     }
 
     return wells;

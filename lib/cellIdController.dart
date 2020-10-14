@@ -1,3 +1,5 @@
+import 'package:NAWI/widgets/tableContainer.dart';
+
 class Pointer {
   String id;
   Map<String, bool> _content = new Map();
@@ -54,4 +56,8 @@ class CellIdController {
       new Pointer('5.18')
     ]
   ];
+
+  // contains Inkwells with child of type TableContainer
+  static List<TableContainer> cells = new List<TableContainer>();
+  static TableContainer selectedCell;
 }

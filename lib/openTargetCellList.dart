@@ -1,16 +1,23 @@
+import 'package:NAWI/cellIdController.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/targetScrollView.dart';
 import 'xmlRequest.dart';
 
-class DragAndDrop {
+class OpenTargetCellList {
   void getTargetCells(String modulName, Map<dynamic, dynamic> tableData,
       BuildContext ctx) async {
-    String modulType = modulName.substring(0, modulName.length - 3);
+    String modulGroup = modulName.substring(0, modulName.length - 3);
+
+    CellIdController.cells.forEach((element) {
+      if (element.childText == modulName) {
+        CellIdController.selectedCell = element;
+      }
+    });
 
     var body = new Map<String, dynamic>();
     body["function"] = 'getPossibleTargetData';
-    body["modulgroupName"] = modulType;
+    body["modulgroupName"] = modulGroup;
 
     Map<String, dynamic> response = await XmlRequest.createPost(body);
 

@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ShowDialog dialog = new ShowDialog();
 
     if (response['success'] == true) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => DropDowns(
