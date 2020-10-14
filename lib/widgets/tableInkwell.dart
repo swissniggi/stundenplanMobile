@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'tableContainer.dart';
 import '../cellIdController.dart';
 import '../openTargetCellList.dart';
-import 'tableContainer.dart';
 
 class TableInkwell {
   final BuildContext ctx;

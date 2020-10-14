@@ -3,32 +3,26 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../xmlRequest.dart';
 import '../dropDowns.dart';
-import '../main.dart';
 
 class NawiDrawer extends StatelessWidget {
+  final String username;
+
+  NawiDrawer(this.username);
+
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
   }
 
   void _getBack(ctx) {
-    Navigator.pushReplacement(
-      ctx,
-      MaterialPageRoute(
-          builder: (context) => DropDowns(title: 'Stundenplan FHNW')),
-    );
+    Navigator.of(ctx).pushReplacementNamed(DropDowns.routeName);
   }
 
   void _logoutUser(ctx) {
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
     XmlRequest.createPost(body);
-    Navigator.pushReplacement(
-      ctx,
-      MaterialPageRoute(
-        builder: (context) => MyHomePage(title: 'Stundenplan FHNW'),
-      ),
-    );
+    Navigator.of(ctx).pushReplacementNamed('/');
   }
 
   Widget _setRowItem(
@@ -84,8 +78,23 @@ class NawiDrawer extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: 20,
+            Container(
+              padding: EdgeInsets.all(4),
+              margin: EdgeInsets.fromLTRB(0, 5, 0, 10),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 3,
+                  color: Color(0xff050262),
+                ),
+              ),
+              child: Text(
+                'Angemeldet als $username',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff050262),
+                ),
+              ),
             ),
             _setRowItem(
               context,

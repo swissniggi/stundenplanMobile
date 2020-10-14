@@ -1,7 +1,6 @@
-import 'package:NAWI/main.dart';
-import 'package:NAWI/widgets/paddingButton.dart';
 import 'package:flutter/material.dart';
 
+import 'widgets/paddingButton.dart';
 import 'widgets/paddingDropDownButton.dart';
 import 'widgets/paddingRadio.dart';
 import 'widgets/showDialog.dart';
@@ -10,11 +9,10 @@ import 'xmlRequest.dart';
 import 'timeTable.dart';
 
 class DropDowns extends StatefulWidget {
-  DropDowns({Key key, this.title, this.username}) : super(key: key);
-
-  final String title;
-
+  static const routeName = '/topicSelection';
   final String username;
+
+  DropDowns({this.username});
 
   @override
   _DropDownsState createState() => _DropDownsState();
@@ -119,12 +117,15 @@ class _DropDownsState extends State<DropDowns> {
       Map<String, dynamic> response = await XmlRequest.createPost(body);
 
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TimeTable(
-                  title: 'Stundenplan FHNW',
-                  fullData: response,
-                  isCatalog: isCatalog)));
+        context,
+        MaterialPageRoute(
+          builder: (context) => TimeTable(
+            username: widget.username,
+            fullData: response,
+            isCatalog: isCatalog,
+          ),
+        ),
+      );
     } else {
       ShowDialog dialog = new ShowDialog();
       dialog.showCustomDialog(
@@ -145,10 +146,7 @@ class _DropDownsState extends State<DropDowns> {
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
     XmlRequest.createPost(body);
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MyHomePage(title: 'Stundenplan FHNW')));
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   @override
@@ -159,7 +157,7 @@ class _DropDownsState extends State<DropDowns> {
           icon: Icon(Icons.exit_to_app),
           onPressed: _logoutUser,
         ),
-        title: Text(widget.title),
+        title: Text('Stundenplan FHNW'),
         centerTitle: true,
       ),
       body: Center(

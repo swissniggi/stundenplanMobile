@@ -1,17 +1,17 @@
-import 'package:NAWI/cellIdController.dart';
-import 'package:NAWI/widgets/nawiDrawer.dart';
 import 'package:flutter/material.dart';
 
+import 'widgets/nawiDrawer.dart';
 import 'widgets/tableContainer.dart';
 import 'widgets/tableInkwell.dart';
+import 'cellIdController.dart';
 
 class TimeTable extends StatefulWidget {
-  TimeTable({Key key, this.title, this.fullData, this.isCatalog})
-      : super(key: key);
-
-  final String title;
+  static const routeName = '/timeTables';
+  final String username;
   final Map<String, dynamic> fullData;
   final bool isCatalog;
+
+  TimeTable({this.username, this.fullData, this.isCatalog});
 
   @override
   _TimeTableState createState() => _TimeTableState();
@@ -296,9 +296,9 @@ class _TimeTableState extends State<TimeTable> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Stundenplan FHNW'),
       ),
-      drawer: NawiDrawer(),
+      drawer: NawiDrawer(widget.username),
       body: Container(
         child: ListView(
           scrollDirection: Axis.vertical,

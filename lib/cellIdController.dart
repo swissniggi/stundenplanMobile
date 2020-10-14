@@ -1,4 +1,4 @@
-import 'package:NAWI/widgets/tableContainer.dart';
+import 'widgets/tableContainer.dart';
 
 class Pointer {
   String id;

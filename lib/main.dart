@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
+import 'widgets/showDialog.dart';
 import 'xmlRequest.dart';
 import 'dropDowns.dart';
 import 'register.dart';
-import 'widgets/showDialog.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,15 +26,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      home: MyHomePage(title: 'Stundenplan FHNW'),
+      initialRoute: '/',
+      routes: {
+        '/': (ctx) => MyHomePage(),
+        Register.routeName: (ctx) => Register(),
+        DropDowns.routeName: (ctx) => DropDowns(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -58,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
         context,
         MaterialPageRoute(
           builder: (context) => DropDowns(
-            title: 'Stundenplan FHNW',
             username: response['username'],
           ),
         ),
@@ -76,10 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _registerUser() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Register(title: 'Stundenplan FHNW')));
+    Navigator.of(context).pushReplacementNamed(Register.routeName);
   }
 
   @override
@@ -87,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xfffbe400),
-        title: Text(widget.title),
+        title: Text('Stundenplan FHNW'),
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.all(8),

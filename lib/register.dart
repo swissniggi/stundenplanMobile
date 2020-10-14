@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'widgets/customFormField.dart';
-import 'main.dart';
 import 'widgets/paddingButton.dart';
 import 'widgets/showDialog.dart';
 import 'xmlRequest.dart';
 
 class Register extends StatefulWidget {
-  Register({Key key, this.title}) : super(key: key);
-
-  final String title;
+  static const routeName = '/register';
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -32,20 +29,25 @@ class _RegisterState extends State<Register> {
 
     if (response['success'] == true) {
       dialog.showCustomDialog(
-          'Registrierung erfolgreich',
-          () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyHomePage(title: 'Stundenplan FHNW'),
-              )),
-          context,
-          [
-            Text('Sie wurden erfolgreich registriert.'
-                'Bitten checken Sie Ihre Mails.')
-          ]);
+        'Registrierung erfolgreich',
+        () => Navigator.of(context).pushReplacementNamed('/'),
+        context,
+        [
+          Text('Sie wurden erfolgreich registriert.'
+              'Bitten checken Sie Ihre Mails.'),
+        ],
+      );
     } else {
-      dialog.showCustomDialog('Fehler', () => Navigator.of(context).pop(),
-          context, [Text(response['message'])]);
+      dialog.showCustomDialog(
+        'Fehler',
+        () => Navigator.of(context).pop(),
+        context,
+        [
+          Text(
+            response['message'],
+          ),
+        ],
+      );
     }
   }
 
@@ -53,7 +55,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Stundenplan FHNW'),
         centerTitle: true,
       ),
       body: Center(

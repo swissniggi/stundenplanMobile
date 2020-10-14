@@ -1,6 +1,7 @@
-import 'package:NAWI/cellIdController.dart';
-import 'package:NAWI/widgets/tableContainer.dart';
 import 'package:flutter/material.dart';
+
+import 'tableContainer.dart';
+import '../cellIdController.dart';
 
 class TargetScrollView extends StatefulWidget {
   final Map<String, dynamic> wellTexts;

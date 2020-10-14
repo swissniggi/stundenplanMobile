@@ -1,7 +1,7 @@
-import 'package:NAWI/cellIdController.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/targetScrollView.dart';
+import 'cellIdController.dart';
 import 'xmlRequest.dart';
 
 class OpenTargetCellList {
@@ -26,9 +26,10 @@ class OpenTargetCellList {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-              onTap: () {},
-              child: TargetScrollView(response),
-              behavior: HitTestBehavior.opaque);
+            onTap: () {},
+            child: TargetScrollView(response),
+            behavior: HitTestBehavior.opaque,
+          );
         },
       );
     }
