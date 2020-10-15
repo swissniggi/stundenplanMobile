@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/customFormField.dart';
 import '../widgets/paddingButton.dart';
 import '../widgets/showDialog.dart';
-import '../xmlRequest.dart';
+import '../services/xmlRequest_service.dart';
 
 class Register extends StatefulWidget {
   static const routeName = '/register';
@@ -24,7 +24,7 @@ class _RegisterState extends State<Register> {
     body["usermail"] = usermailController.text;
     body["password"] = passwordController.text;
 
-    Map<String, dynamic> response = await XmlRequest.createPost(body);
+    Map<String, dynamic> response = await XmlRequestService.createPost(body);
     ShowDialog dialog = new ShowDialog();
 
     if (response['success'] == true) {

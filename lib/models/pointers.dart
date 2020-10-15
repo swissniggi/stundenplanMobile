@@ -1,5 +1,3 @@
-import '../widgets/tableContainer.dart';
-
 class Pointer {
   String id;
   Map<String, bool> _content = new Map();

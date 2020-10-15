@@ -5,7 +5,7 @@ import '../providers/tabledata_provider.dart';
 import '../widgets/nawiDrawer.dart';
 import '../widgets/tableContainer.dart';
 import '../widgets/tableInkwell.dart';
-import '../cellIdController.dart';
+import '../models/pointers.dart';
 
 class TimeTable extends StatefulWidget {
   static const routeName = '/timeTables';
@@ -98,42 +98,42 @@ class _TimeTableState extends State<TimeTable> {
           context,
           tableData,
           colors,
-          CellIdController.pointers[0],
+          Pointers.pointers[0],
         ).buildList(),
         TableContainer('10:00 - 12:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
           tableData,
           colors,
-          CellIdController.pointers[1],
+          Pointers.pointers[1],
         ).buildList(),
         TableContainer('12:00 - 14:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
           tableData,
           colors,
-          CellIdController.pointers[2],
+          Pointers.pointers[2],
         ).buildList(),
         TableContainer('14:00 - 16:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
           tableData,
           colors,
-          CellIdController.pointers[3],
+          Pointers.pointers[3],
         ).buildList(),
         TableContainer('16:00 - 18:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
           tableData,
           colors,
-          CellIdController.pointers[4],
+          Pointers.pointers[4],
         ).buildList(),
         TableContainer('18:00 - 20:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
           tableData,
           colors,
-          CellIdController.pointers[5],
+          Pointers.pointers[5],
         ).buildList(),
       ],
     );

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../models/pointers.dart';
 import '../models/cells.dart';
-import '../services/xmlRequest.dart';
+import '../services/xmlRequest_service.dart';
 import 'targetScrollView.dart';
 
 class TargetCellList {
@@ -19,7 +18,7 @@ class TargetCellList {
     body["function"] = 'getPossibleTargetData';
     body["modulgroupName"] = modulGroup;
 
-    Map<String, dynamic> response = await XmlRequest.createPost(body);
+    Map<String, dynamic> response = await XmlRequestService.createPost(body);
 
     if (response != null) {
       showModalBottomSheet(

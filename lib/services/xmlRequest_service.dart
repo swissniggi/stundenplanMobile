@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class XmlRequest {
+class XmlRequestService {
   static String url = 'https://nawi.li/PHP/main.php';
 
   static Future<Map<String, dynamic>> createPost(Map body) async {

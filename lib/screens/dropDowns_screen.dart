@@ -8,7 +8,7 @@ import '../widgets/paddingDropDownButton.dart';
 import '../widgets/paddingRadio.dart';
 import '../widgets/showDialog.dart';
 import '../widgets/simpleText.dart';
-import '../xmlRequest.dart';
+import '../services/xmlRequest_service.dart';
 import 'timeTable_screen.dart';
 
 class DropDowns extends StatefulWidget {
@@ -66,7 +66,7 @@ class _DropDownsState extends State<DropDowns> {
         Provider.of<UserProvider>(context, listen: false).username;
     body["function"] = 'getCatalogsOfUser';
     body["username"] = username;
-    Map<String, dynamic> response = await XmlRequest.createPost(body);
+    Map<String, dynamic> response = await XmlRequestService.createPost(body);
 
     if (response['success'] == true) {
       if (response['0'].length > 0) {
@@ -116,7 +116,7 @@ class _DropDownsState extends State<DropDowns> {
             PaddingDropDownButton.selectedValues[2];
       }
 
-      Map<String, dynamic> response = await XmlRequest.createPost(body);
+      Map<String, dynamic> response = await XmlRequestService.createPost(body);
 
       Provider.of<TableDataProvider>(context, listen: false).newTableData =
           response;
@@ -143,7 +143,7 @@ class _DropDownsState extends State<DropDowns> {
   void _logoutUser() {
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
-    XmlRequest.createPost(body);
+    XmlRequestService.createPost(body);
     Navigator.of(context).pushReplacementNamed('/');
   }
 

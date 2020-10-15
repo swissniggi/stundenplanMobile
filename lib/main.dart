@@ -10,7 +10,7 @@ import 'screens/register_screen.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 import 'widgets/showDialog.dart';
-import 'xmlRequest.dart';
+import 'services/xmlRequest_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     body["username"] = usernameController.text;
     body["password"] = passwordController.text;
 
-    Map<String, dynamic> response = await XmlRequest.createPost(body);
+    Map<String, dynamic> response = await XmlRequestService.createPost(body);
     ShowDialog dialog = new ShowDialog();
 
     if (response['success'] == true) {

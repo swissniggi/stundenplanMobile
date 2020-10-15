@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../services/xmlRequest.dart';
+import '../services/xmlRequest_service.dart';
 import '../providers/user_provider.dart';
 import '../screens/dropDowns_screen.dart';
 
@@ -19,7 +19,7 @@ class NawiDrawer extends StatelessWidget {
   void _logoutUser(ctx) {
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
-    XmlRequest.createPost(body);
+    XmlRequestService.createPost(body);
     Navigator.of(ctx).pushReplacementNamed('/');
   }
 
