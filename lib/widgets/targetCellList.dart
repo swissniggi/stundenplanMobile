@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/targetScrollView.dart';
-import 'cellIdController.dart';
-import 'xmlRequest.dart';
+import '../models/pointers.dart';
+import '../models/cells.dart';
+import '../services/xmlRequest.dart';
+import 'targetScrollView.dart';
 
-class OpenTargetCellList {
-  void getTargetCells(String modulName, Map<dynamic, dynamic> tableData,
-      BuildContext ctx) async {
+class TargetCellList {
+  void showTargetCells(String modulName, BuildContext ctx) async {
     String modulGroup = modulName.substring(0, modulName.length - 3);
 
-    CellIdController.cells.forEach((element) {
+    Cells.allCells.forEach((element) {
       if (element.childText == modulName) {
-        CellIdController.selectedCell = element;
+        Cells.selectedCell = element;
       }
     });
 

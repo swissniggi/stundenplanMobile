@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../xmlRequest.dart';
-import '../dropDowns.dart';
+import '../services/xmlRequest.dart';
+import '../providers/user_provider.dart';
+import '../screens/dropDowns_screen.dart';
 
 class NawiDrawer extends StatelessWidget {
-  final String username;
-
-  NawiDrawer(this.username);
-
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
@@ -49,6 +47,7 @@ class NawiDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String username = Provider.of<UserProvider>(context).currentUser.username;
     return Drawer(
       child: Container(
         color: Color(0xfffbe400),

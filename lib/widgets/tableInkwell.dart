@@ -1,48 +1,53 @@
 import 'package:flutter/material.dart';
 
+import '../models/cells.dart';
+import '../models/pointers.dart';
 import 'tableContainer.dart';
-import '../cellIdController.dart';
-import '../openTargetCellList.dart';
+import 'targetCellList.dart';
 
 class TableInkwell {
   final BuildContext ctx;
-  final String sem;
-  final int year;
-  final String location;
   final Map<dynamic, dynamic> tableData;
   final List<Color> colors;
   final List<Pointer> pointerList;
 
-  TableInkwell(this.ctx, this.sem, this.year, this.location, this.tableData,
-      this.colors, this.pointerList);
+  TableInkwell(this.ctx, this.tableData, this.colors, this.pointerList);
 
   List<Widget> buildList() {
     List<Widget> wells = new List<Widget>();
     bool hasContent = false;
 
     for (var i = 0; i < pointerList.length; i++) {
+      String module = '';
+      String year = '';
+      String sem = '';
+      String location = '';
+      int type = 0;
+
       if (tableData[pointerList[i].id] != null) {
         hasContent = true;
+        module = tableData[pointerList[i].id]['name'];
+        year = tableData[pointerList[i].id]['year'].toString();
+        sem = tableData[pointerList[i].id]['sem'];
+        location = tableData[pointerList[i].id]['location'];
+        type = tableData[pointerList[i].id]['typ'];
       }
-      pointerList[i].content.putIfAbsent(
-          year.toString() + '.' + sem + '.' + location, () => hasContent);
+
+      pointerList[i]
+          .content
+          .putIfAbsent(year + '.' + sem + '.' + location, () => hasContent);
 
       var newWell = InkWell(
         onLongPress: tableData[pointerList[i].id] == null
             ? () => {}
             : () {
-                String module = tableData[pointerList[i].id]['name'];
-                OpenTargetCellList dAD = new OpenTargetCellList();
-                dAD.getTargetCells(module, tableData, ctx);
+                TargetCellList dAD = new TargetCellList();
+                dAD.showTargetCells(module, ctx);
               },
         child: TableContainer(
-          tableData[pointerList[i].id] == null
-              ? ''
-              : tableData[pointerList[i].id]['name'],
+          module,
           Colors.black,
-          tableData[pointerList[i].id] == null
-              ? colors[0]
-              : colors[tableData[pointerList[i].id]['typ']],
+          colors[type],
           pointerList[i].id +
               '.' +
               location +
@@ -54,7 +59,7 @@ class TableInkwell {
       );
 
       wells.add(newWell);
-      CellIdController.cells.add(newWell.child);
+      Cells.allCells.add(newWell.child);
     }
 
     return wells;

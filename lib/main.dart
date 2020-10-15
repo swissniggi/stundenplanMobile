@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
+import 'providers/tabledata_provider.dart';
+import 'providers/user_provider.dart';
+import 'screens/timeTable_screen.dart';
+import 'screens/dropDowns_screen.dart';
+import 'screens/register_screen.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 import 'widgets/showDialog.dart';
 import 'xmlRequest.dart';
-import 'dropDowns.dart';
-import 'register.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
     DeviceOrientation.portraitUp,
   ]);
   runApp(MyApp());
@@ -21,17 +24,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Stundenplan FHNW',
-      theme: ThemeData(
-        primarySwatch: Colors.yellow,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => UserProvider(),
+        ),
+        ChangeNotifierProvider<TableDataProvider>(
+          create: (_) => TableDataProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Stundenplan FHNW',
+        theme: ThemeData(
+          primarySwatch: Colors.yellow,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (ctx) => MyHomePage(),
+          Register.routeName: (ctx) => Register(),
+          DropDowns.routeName: (ctx) => DropDowns(),
+          TimeTable.routeName: (ctx) => TimeTable(),
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (ctx) => MyHomePage(),
-        Register.routeName: (ctx) => Register(),
-        DropDowns.routeName: (ctx) => DropDowns(),
-      },
     );
   }
 }
@@ -57,14 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
     ShowDialog dialog = new ShowDialog();
 
     if (response['success'] == true) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DropDowns(
-            username: response['username'],
-          ),
-        ),
-      );
+      Provider.of<UserProvider>(context, listen: false).username =
+          response['username'];
+      Navigator.of(context).pushReplacementNamed(DropDowns.routeName);
     } else {
       dialog.showCustomDialog(
         'Fehler',

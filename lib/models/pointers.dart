@@ -1,4 +1,4 @@
-import 'widgets/tableContainer.dart';
+import '../widgets/tableContainer.dart';
 
 class Pointer {
   String id;
@@ -11,7 +11,7 @@ class Pointer {
   }
 }
 
-class CellIdController {
+class Pointers {
   static List<List<Pointer>> pointers = [
     [
       new Pointer('1.8'),
@@ -56,8 +56,4 @@ class CellIdController {
       new Pointer('5.18')
     ]
   ];
-
-  // contains Inkwells with child of type TableContainer
-  static List<TableContainer> cells = new List<TableContainer>();
-  static TableContainer selectedCell;
 }

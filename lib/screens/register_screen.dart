@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/customFormField.dart';
-import 'widgets/paddingButton.dart';
-import 'widgets/showDialog.dart';
-import 'xmlRequest.dart';
+import '../widgets/customFormField.dart';
+import '../widgets/paddingButton.dart';
+import '../widgets/showDialog.dart';
+import '../xmlRequest.dart';
 
 class Register extends StatefulWidget {
   static const routeName = '/register';

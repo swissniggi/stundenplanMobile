@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'widgets/nawiDrawer.dart';
-import 'widgets/tableContainer.dart';
-import 'widgets/tableInkwell.dart';
-import 'cellIdController.dart';
+import '../providers/tabledata_provider.dart';
+import '../widgets/nawiDrawer.dart';
+import '../widgets/tableContainer.dart';
+import '../widgets/tableInkwell.dart';
+import '../cellIdController.dart';
 
 class TimeTable extends StatefulWidget {
   static const routeName = '/timeTables';
-  final String username;
-  final Map<String, dynamic> fullData;
-  final bool isCatalog;
-
-  TimeTable({this.username, this.fullData, this.isCatalog});
 
   @override
   _TimeTableState createState() => _TimeTableState();
@@ -99,9 +96,6 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('08:00 - 10:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
-          sem,
-          year,
-          location,
           tableData,
           colors,
           CellIdController.pointers[0],
@@ -109,9 +103,6 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('10:00 - 12:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
-          sem,
-          year,
-          location,
           tableData,
           colors,
           CellIdController.pointers[1],
@@ -119,9 +110,6 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('12:00 - 14:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
-          sem,
-          year,
-          location,
           tableData,
           colors,
           CellIdController.pointers[2],
@@ -129,9 +117,6 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('14:00 - 16:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
-          sem,
-          year,
-          location,
           tableData,
           colors,
           CellIdController.pointers[3],
@@ -139,9 +124,6 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('16:00 - 18:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
-          sem,
-          year,
-          location,
           tableData,
           colors,
           CellIdController.pointers[4],
@@ -149,9 +131,6 @@ class _TimeTableState extends State<TimeTable> {
         TableContainer('18:00 - 20:00', Colors.black, Color(0xFFBE6E6FA)),
         ...TableInkwell(
           context,
-          sem,
-          year,
-          location,
           tableData,
           colors,
           CellIdController.pointers[5],
@@ -189,11 +168,13 @@ class _TimeTableState extends State<TimeTable> {
   }
 
   Map<String, Map> processFooterData() {
+    Map<String, dynamic> fullData =
+        Provider.of<TableDataProvider>(context, listen: false).currentTableData;
     var pruefung = '';
     var vorschlag = 0;
     Map<String, Map> pruefungen = {};
     var veranstaltungen = {};
-    for (var zeile in widget.fullData['1']) {
+    for (var zeile in fullData['1']) {
       var exam = {};
       if (pruefung == zeile['Pruefung']) {
         veranstaltungen[zeile] = zeile['Veranstaltung'];
@@ -228,8 +209,11 @@ class _TimeTableState extends State<TimeTable> {
   }
 
   Map<String, Map> updateTable() {
+    Map<String, dynamic> fullData =
+        Provider.of<TableDataProvider>(context, listen: false).currentTableData;
+
     Map<String, Map> allData = {};
-    for (var zeile in widget.fullData['0']) {
+    for (var zeile in fullData['0']) {
       var fach = zeile['Fach'];
       var year = int.parse(zeile['Jahr']);
       var sem = zeile['Semester'];
@@ -298,7 +282,7 @@ class _TimeTableState extends State<TimeTable> {
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),
       ),
-      drawer: NawiDrawer(widget.username),
+      drawer: NawiDrawer(),
       body: Container(
         child: ListView(
           scrollDirection: Axis.vertical,

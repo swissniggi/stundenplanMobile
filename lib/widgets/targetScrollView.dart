@@ -1,7 +1,8 @@
+import 'package:NAWI/models/cells.dart';
 import 'package:flutter/material.dart';
 
 import 'tableContainer.dart';
-import '../cellIdController.dart';
+import '../models/pointers.dart';
 
 class TargetScrollView extends StatefulWidget {
   final Map<String, dynamic> wellTexts;
@@ -26,7 +27,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
     ];
 
     List<dynamic> data = widget.wellTexts["0"];
-    List<List<Pointer>> pointer = CellIdController.pointers;
+    List<List<Pointer>> pointer = Pointers.pointers;
 
     for (var i = 0; i < data.length; i++) {
       for (var j = 0; j < pointer[i].length; j++) {
@@ -50,7 +51,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
           bool hasContent = value;
 
           if (hasContent == false &&
-              possibleId != CellIdController.selectedCell.id &&
+              possibleId != Cells.selectedCell.id &&
               sem == data[i]['Semester'] &&
               location == data[i]['Ort']) {
             String text = '$location, $sem $year, am $day um $timeSlot:00';
@@ -83,7 +84,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
   }
 
   void _moveCell(String text) {
-    TableContainer selected = CellIdController.selectedCell;
+    TableContainer selected = Cells.selectedCell;
     String dayPart;
     String slotPart;
 
@@ -137,8 +138,8 @@ class _TargetScrollViewState extends State<TargetScrollView> {
     String targetId = dayPart + '.' + slotPart;
     TableContainer targetCell;
 
-    for (var c = 0; c < CellIdController.cells.length; c++) {
-      TableContainer currentCell = CellIdController.cells[c];
+    for (var c = 0; c < Cells.allCells.length; c++) {
+      TableContainer currentCell = Cells.allCells[c];
       List<String> currentCellIdParts = currentCell.id.split('.');
 
       if (currentCell.id.contains(targetId) &&

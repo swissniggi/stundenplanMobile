@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'widgets/paddingButton.dart';
-import 'widgets/paddingDropDownButton.dart';
-import 'widgets/paddingRadio.dart';
-import 'widgets/showDialog.dart';
-import 'widgets/simpleText.dart';
-import 'xmlRequest.dart';
-import 'timeTable.dart';
+import '../providers/tabledata_provider.dart';
+import '../providers/user_provider.dart';
+import '../widgets/paddingButton.dart';
+import '../widgets/paddingDropDownButton.dart';
+import '../widgets/paddingRadio.dart';
+import '../widgets/showDialog.dart';
+import '../widgets/simpleText.dart';
+import '../xmlRequest.dart';
+import 'timeTable_screen.dart';
 
 class DropDowns extends StatefulWidget {
   static const routeName = '/topicSelection';
-  final String username;
-
-  DropDowns({this.username});
 
   @override
   _DropDownsState createState() => _DropDownsState();
@@ -62,8 +62,10 @@ class _DropDownsState extends State<DropDowns> {
 
   void _prepareCatalogData() async {
     var body = new Map<String, dynamic>();
+    String username =
+        Provider.of<UserProvider>(context, listen: false).username;
     body["function"] = 'getCatalogsOfUser';
-    body["username"] = widget.username;
+    body["username"] = username;
     Map<String, dynamic> response = await XmlRequest.createPost(body);
 
     if (response['success'] == true) {
@@ -116,16 +118,12 @@ class _DropDownsState extends State<DropDowns> {
 
       Map<String, dynamic> response = await XmlRequest.createPost(body);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TimeTable(
-            username: widget.username,
-            fullData: response,
-            isCatalog: isCatalog,
-          ),
-        ),
-      );
+      Provider.of<TableDataProvider>(context, listen: false).newTableData =
+          response;
+      Provider.of<TableDataProvider>(context, listen: false).isCatalogValue =
+          isCatalog;
+
+      Navigator.of(context).pushReplacementNamed(TimeTable.routeName);
     } else {
       ShowDialog dialog = new ShowDialog();
       dialog.showCustomDialog(
