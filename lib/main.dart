@@ -1,3 +1,4 @@
+import 'package:NAWI/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -36,14 +37,16 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Stundenplan FHNW',
         theme: ThemeData(
-          primarySwatch: Colors.yellow,
+          primaryColor: Color(0xfffbe400),
+          indicatorColor: Color(0xff050262),
         ),
         initialRoute: '/',
         routes: {
           '/': (ctx) => MyHomePage(),
-          Register.routeName: (ctx) => Register(),
-          DropDowns.routeName: (ctx) => DropDowns(),
-          TimeTable.routeName: (ctx) => TimeTable(),
+          RegisterScreen.routeName: (ctx) => RegisterScreen(),
+          WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
+          DropDownsScreen.routeName: (ctx) => DropDownsScreen(),
+          TimeTableScreen.routeName: (ctx) => TimeTableScreen(),
         },
       ),
     );
@@ -73,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response['success'] == true) {
       Provider.of<UserProvider>(context, listen: false).username =
           response['username'];
-      Navigator.of(context).pushReplacementNamed(DropDowns.routeName);
+      Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
     } else {
       dialog.showCustomDialog(
         'Fehler',
@@ -87,14 +90,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _registerUser() {
-    Navigator.of(context).pushReplacementNamed(Register.routeName);
+    Navigator.of(context).pushReplacementNamed(RegisterScreen.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xfffbe400),
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text('Stundenplan FHNW'),
         centerTitle: true,
         leading: Padding(

@@ -13,6 +13,7 @@ class PaddingButton extends StatelessWidget {
       child: ButtonTheme(
         minWidth: 140,
         child: RaisedButton(
+          color: Theme.of(context).primaryColor,
           onPressed: onPressedFunc,
           child: Text(
             buttonText,

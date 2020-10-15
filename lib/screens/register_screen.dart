@@ -5,14 +5,14 @@ import '../widgets/paddingButton.dart';
 import '../widgets/showDialog.dart';
 import '../services/xmlRequest_service.dart';
 
-class Register extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
   @override
-  _RegisterState createState() => _RegisterState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final usernameController = TextEditingController();
   final usermailController = TextEditingController();
   final passwordController = TextEditingController();

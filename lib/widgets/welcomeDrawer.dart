@@ -6,13 +6,13 @@ import '../services/xmlRequest_service.dart';
 import '../providers/user_provider.dart';
 import '../screens/dropDowns_screen.dart';
 
-class NawiDrawer extends StatelessWidget {
+class WelcomeDrawer extends StatelessWidget {
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
   }
 
-  void _getBack(ctx) {
+  void _getToTopicSelection(ctx) {
     Navigator.of(ctx).pushReplacementNamed(DropDownsScreen.routeName);
   }
 
@@ -106,9 +106,9 @@ class NawiDrawer extends StatelessWidget {
             _setRowItem(
               context,
               'Zur Fachauswahl',
-              Icons.keyboard_return,
+              Icons.select_all,
               () {
-                _getBack(context);
+                _getToTopicSelection(context);
               },
             ),
             _setRowItem(

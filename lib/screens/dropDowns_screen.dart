@@ -11,14 +11,14 @@ import '../widgets/simpleText.dart';
 import '../services/xmlRequest_service.dart';
 import 'timeTable_screen.dart';
 
-class DropDowns extends StatefulWidget {
+class DropDownsScreen extends StatefulWidget {
   static const routeName = '/topicSelection';
 
   @override
-  _DropDownsState createState() => _DropDownsState();
+  _DropDownsScreenState createState() => _DropDownsScreenState();
 }
 
-class _DropDownsState extends State<DropDowns> {
+class _DropDownsScreenState extends State<DropDownsScreen> {
   String selectedCatalog;
 
   var _groupValue = -1;
@@ -123,7 +123,7 @@ class _DropDownsState extends State<DropDowns> {
       Provider.of<TableDataProvider>(context, listen: false).isCatalogValue =
           isCatalog;
 
-      Navigator.of(context).pushReplacementNamed(TimeTable.routeName);
+      Navigator.of(context).pushReplacementNamed(TimeTableScreen.routeName);
     } else {
       ShowDialog dialog = new ShowDialog();
       dialog.showCustomDialog(

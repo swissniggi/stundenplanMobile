@@ -7,14 +7,14 @@ import '../widgets/tableContainer.dart';
 import '../widgets/tableInkwell.dart';
 import '../models/pointers.dart';
 
-class TimeTable extends StatefulWidget {
+class TimeTableScreen extends StatefulWidget {
   static const routeName = '/timeTables';
 
   @override
-  _TimeTableState createState() => _TimeTableState();
+  _TimeTableScreenState createState() => _TimeTableScreenState();
 }
 
-class _TimeTableState extends State<TimeTable> {
+class _TimeTableScreenState extends State<TimeTableScreen> {
   GridView configureTables() {
     Map<String, Map> allData = updateTable();
     //Map<String, Map> exams = processFooterData();
