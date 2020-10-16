@@ -1,3 +1,4 @@
+import 'package:NAWI/screens/dropDowns_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -282,7 +283,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),
       ),
-      drawer: NawiDrawer(),
+      drawer: NawiDrawer(DropDownsScreen.routeName, 'Zur Fachauswahl'),
       body: Container(
         child: ListView(
           scrollDirection: Axis.vertical,

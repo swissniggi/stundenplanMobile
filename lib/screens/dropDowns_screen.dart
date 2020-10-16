@@ -1,3 +1,5 @@
+import 'package:NAWI/screens/welcome_screen.dart';
+import 'package:NAWI/widgets/nawiDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -140,24 +142,14 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
     }
   }
 
-  void _logoutUser() {
-    var body = new Map<String, dynamic>();
-    body["function"] = 'logoutUser';
-    XmlRequestService.createPost(body);
-    Navigator.of(context).pushReplacementNamed('/');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: _logoutUser,
-        ),
         title: Text('Stundenplan FHNW'),
         centerTitle: true,
       ),
+      drawer: NawiDrawer(WelcomeScreen.routeName, 'Zum Hauptmenü'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

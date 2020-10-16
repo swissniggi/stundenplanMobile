@@ -1,4 +1,3 @@
-import 'package:NAWI/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'providers/user_provider.dart';
 import 'screens/timeTable_screen.dart';
 import 'screens/dropDowns_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/welcome_screen.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 import 'widgets/showDialog.dart';
@@ -54,8 +54,6 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }

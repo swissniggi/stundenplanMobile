@@ -1,15 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../providers/user_provider.dart';
 import '../widgets/welcomeDrawer.dart';
 import '../widgets/welcomeGridTile.dart';
+import '../widgets/welcomeWebView.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const routeName = '/welcome';
@@ -21,21 +19,16 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   List<WelcomeGridTile> _gridTiles = new List<WelcomeGridTile>();
 
-  @override
-  void initState() {
-    super.initState();
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-  }
-
   void _addWebView() async {
-    String externalSource = await prompt(context,
-        title: Text(
-            'Geben Sie die Adresse der Webseite an, die Sie anzeigen möchten: '));
+    String externalSource = await prompt(
+      context,
+      initialValue: 'www.',
+      title: Text(
+          'Geben Sie die Adresse der Webseite an, die Sie anzeigen möchten: '),
+    );
     setState(() {
       WelcomeGridTile newWebView = WelcomeGridTile(
-        WebView(
-          initialUrl: 'https://$externalSource',
-        ),
+        WelcomeWebView(ValueKey(externalSource), externalSource),
       );
       _gridTiles.insert(0, newWebView);
     });
@@ -115,8 +108,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             Expanded(
               child: GridView(
+                padding: EdgeInsets.all(8),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: 1,
                   childAspectRatio: 3 / 2,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,

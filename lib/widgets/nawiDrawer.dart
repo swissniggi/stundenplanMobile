@@ -4,16 +4,20 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../services/xmlRequest_service.dart';
 import '../providers/user_provider.dart';
-import '../screens/dropDowns_screen.dart';
 
 class NawiDrawer extends StatelessWidget {
+  final String route;
+  final String targetName;
+
+  NawiDrawer(this.route, this.targetName);
+
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
   }
 
   void _getBack(ctx) {
-    Navigator.of(ctx).pushReplacementNamed(DropDownsScreen.routeName);
+    Navigator.of(ctx).pushReplacementNamed(route);
   }
 
   void _logoutUser(ctx) {
@@ -105,7 +109,7 @@ class NawiDrawer extends StatelessWidget {
             ),
             _setRowItem(
               context,
-              'Zur Fachauswahl',
+              targetName,
               Icons.keyboard_return,
               () {
                 _getBack(context);
