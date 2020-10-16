@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 
 import 'providers/tabledata_provider.dart';
 import 'providers/user_provider.dart';
+import 'providers/security_provider.dart';
 import 'screens/timeTable_screen.dart';
 import 'screens/dropDowns_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'screens/settings_screen.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 import 'widgets/showDialog.dart';
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<TableDataProvider>(
           create: (_) => TableDataProvider(),
         ),
+        ChangeNotifierProvider<SecurityProvider>(
+          create: (_) => SecurityProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Stundenplan FHNW',
@@ -45,6 +50,7 @@ class MyApp extends StatelessWidget {
           '/': (ctx) => MyHomePage(),
           RegisterScreen.routeName: (ctx) => RegisterScreen(),
           WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
+          SettingsScreen.routeName: (ctx) => SettingsScreen(),
           DropDownsScreen.routeName: (ctx) => DropDownsScreen(),
           TimeTableScreen.routeName: (ctx) => TimeTableScreen(),
         },
@@ -93,6 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<SecurityProvider>(context, listen: false).checkBiometrics();
+    Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,

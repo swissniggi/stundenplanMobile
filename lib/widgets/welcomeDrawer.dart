@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/xmlRequest_service.dart';
 import '../providers/user_provider.dart';
 import '../screens/dropDowns_screen.dart';
+import '../screens/settings_screen.dart';
 
 class WelcomeDrawer extends StatelessWidget {
   Future<void> _goToFHNW() async {
@@ -14,6 +15,10 @@ class WelcomeDrawer extends StatelessWidget {
 
   void _getToTopicSelection(ctx) {
     Navigator.of(ctx).pushReplacementNamed(DropDownsScreen.routeName);
+  }
+
+  void _getToSettings(ctx) {
+    Navigator.of(ctx).pushReplacementNamed(SettingsScreen.routeName);
   }
 
   void _logoutUser(ctx) {
@@ -109,6 +114,14 @@ class WelcomeDrawer extends StatelessWidget {
               Icons.select_all,
               () {
                 _getToTopicSelection(context);
+              },
+            ),
+            _setRowItem(
+              context,
+              'Settings',
+              Icons.settings,
+              () {
+                _getToSettings(context);
               },
             ),
             _setRowItem(
