@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/user_provider.dart';
 import '../widgets/welcomeDrawer.dart';
@@ -28,7 +29,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
     setState(() {
       WelcomeGridTile newWebView = WelcomeGridTile(
-        WelcomeWebView(ValueKey(externalSource), externalSource),
+        InkWell(
+          onTap: () async {
+            String url = externalSource;
+            await launch(url);
+          },
+          child: WelcomeWebView(ValueKey(externalSource), externalSource),
+        ),
       );
       _gridTiles.insert(0, newWebView);
     });
@@ -111,7 +118,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 padding: EdgeInsets.all(8),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  childAspectRatio: 3 / 2,
+                  childAspectRatio: 1 / 2,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
