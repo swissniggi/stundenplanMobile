@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../services/xmlRequest_service.dart';
 
 class SecurityProvider with ChangeNotifier {
-  bool _bioAuthIsEnabled = false;
+  bool _bioAuthIsEnabled;
   String _deviceId;
 
   // this function has a return type of Future so it can be awaited
