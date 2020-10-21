@@ -74,7 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final passwordController = TextEditingController();
 
   void _getBioAuthData(BuildContext context) async {
-    Provider.of<SecurityProvider>(context, listen: false).checkBiometrics();
     await Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
     await Provider.of<SecurityProvider>(context, listen: false)
         .checkBioAuthisEnabled();

@@ -50,42 +50,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     bool bioAuthIsEnabled =
         Provider.of<SecurityProvider>(context, listen: false).bioAuthIsEnabled;
-    bool canFingerprintAuth =
-        Provider.of<SecurityProvider>(context, listen: false)
-            .canFingerprintAuth;
     return Scaffold(
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),
       ),
       drawer: NawiDrawer(WelcomeScreen.routeName, 'Zum Hauptmenü'),
       body: Container(
-        child: canFingerprintAuth
-            ? Row(
-                children: [
-                  Switch(
-                    value: bioAuthIsEnabled,
-                    onChanged: (value) async {
-                      if (value) {
-                        bool authenticated = await _setBioAuth(context, value);
+          child: Row(
+        children: [
+          Switch(
+            value: bioAuthIsEnabled,
+            onChanged: (value) async {
+              if (value) {
+                bool authenticated = await _setBioAuth(context, value);
 
-                        if (authenticated) {
-                          setState(() {
-                            bioAuthIsEnabled = value;
-                          });
-                        }
-                      } else {
-                        _deleteFingerprint(context, value);
-                        setState(() {
-                          bioAuthIsEnabled = value;
-                        });
-                      }
-                    },
-                  ),
-                  Text('Anmeldung via Fingerprint'),
-                ],
-              )
-            : Container(),
-      ),
+                if (authenticated) {
+                  setState(() {
+                    bioAuthIsEnabled = value;
+                  });
+                }
+              } else {
+                _deleteFingerprint(context, value);
+                setState(() {
+                  bioAuthIsEnabled = value;
+                });
+              }
+            },
+          ),
+          Text('Anmeldung via Fingerprint'),
+        ],
+      )),
     );
   }
 }
