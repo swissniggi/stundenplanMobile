@@ -122,7 +122,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
 
       Provider.of<TableDataProvider>(context, listen: false).newTableData =
           response;
-      Provider.of<TableDataProvider>(context, listen: false).isCatalogValue =
+      Provider.of<TableDataProvider>(context, listen: false).isCatalog =
           isCatalog;
 
       Navigator.of(context).pushReplacementNamed(TimeTableScreen.routeName);

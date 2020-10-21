@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
 class TableDataProvider with ChangeNotifier {
-  Map<String, dynamic> tableData = new Map<String, dynamic>();
-  bool isCatalog = false;
+  Map<String, dynamic> _tableData = new Map<String, dynamic>();
+  bool _isCatalog = false;
 
   set newTableData(Map<String, dynamic> data) {
-    this.tableData = data;
+    this._tableData = data;
     notifyListeners();
   }
 
-  Map<String, dynamic> get currentTableData {
-    final Map<String, dynamic> currentTableData = this.tableData;
+  Map<String, dynamic> get tableData {
+    final Map<String, dynamic> currentTableData = this._tableData;
     return currentTableData;
   }
 
-  set isCatalogValue(bool isCatalog) {
-    this.isCatalog = isCatalog;
+  set isCatalog(bool isCatalog) {
+    this._isCatalog = isCatalog;
     notifyListeners();
   }
 
-  bool get isCatalogValue {
-    return this.isCatalog;
+  bool get isCatalog {
+    return this._isCatalog;
   }
 }

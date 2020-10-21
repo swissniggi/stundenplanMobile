@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 
 class UserProvider with ChangeNotifier {
-  User user = new User();
+  User _user = new User();
 
   set username(String username) {
-    this.user.username = username;
+    this._user.username = username;
     notifyListeners();
   }
 
   String get username {
-    final String currentUsername = this.user.username;
+    final String currentUsername = this._user.username;
     return currentUsername;
   }
 
-  User get currentUser {
-    final User currentUser = this.user;
+  User get user {
+    final User currentUser = this._user;
     return currentUser;
   }
 }

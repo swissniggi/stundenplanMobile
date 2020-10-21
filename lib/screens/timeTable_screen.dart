@@ -170,7 +170,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
 
   Map<String, Map> processFooterData() {
     Map<String, dynamic> fullData =
-        Provider.of<TableDataProvider>(context, listen: false).currentTableData;
+        Provider.of<TableDataProvider>(context, listen: false).tableData;
     var pruefung = '';
     var vorschlag = 0;
     Map<String, Map> pruefungen = {};
@@ -211,7 +211,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
 
   Map<String, Map> updateTable() {
     Map<String, dynamic> fullData =
-        Provider.of<TableDataProvider>(context, listen: false).currentTableData;
+        Provider.of<TableDataProvider>(context, listen: false).tableData;
 
     Map<String, Map> allData = {};
     for (var zeile in fullData['0']) {

@@ -30,7 +30,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         WelcomeCarouselItem newWebView = WelcomeCarouselItem(
           WelcomeWebView(ValueKey(externalSource), externalSource),
         );
-        Provider.of<WebviewProvider>(context, listen: false).newListitem =
+        Provider.of<WebViewProvider>(context, listen: false).newWebsite =
+            externalSource;
+        Provider.of<WebViewProvider>(context, listen: false).newListitem =
             newWebView;
       });
     }
@@ -39,7 +41,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     String username =
-        Provider.of<UserProvider>(context, listen: false).currentUser.username;
+        Provider.of<UserProvider>(context, listen: false).username;
     TimeOfDay currentTime = TimeOfDay.now();
     String salutation;
 
@@ -57,10 +59,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     initializeDateFormatting();
 
-    if (Provider.of<WebviewProvider>(context, listen: false)
+    if (Provider.of<WebViewProvider>(context, listen: false)
         .addedSites
         .isEmpty) {
-      Provider.of<WebviewProvider>(context, listen: false).newListitem =
+      Provider.of<WebViewProvider>(context, listen: false).initialListItem =
           WelcomeCarouselItem(
         IconButton(
           iconSize: 50,
@@ -69,6 +71,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           onPressed: _addWebView,
         ),
       );
+
+      List<String> presetSites =
+          Provider.of<WebViewProvider>(context, listen: false).addedWebsites;
+
+      if (presetSites.isNotEmpty) {
+        for (int i = 0; i < presetSites.length; i++) {
+          WelcomeCarouselItem newWebView = WelcomeCarouselItem(
+            WelcomeWebView(ValueKey(presetSites[i]), presetSites[i]),
+          );
+          Provider.of<WebViewProvider>(context, listen: false).initialListItem =
+              newWebView;
+        }
+      }
     }
 
     return Scaffold(
@@ -114,12 +129,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
                 child: PageView.builder(
                   itemCount:
-                      Provider.of<WebviewProvider>(context, listen: false)
+                      Provider.of<WebViewProvider>(context, listen: false)
                           .addedSites
                           .length,
                   controller: PageController(viewportFraction: 0.9),
                   itemBuilder: (BuildContext context, int index) {
-                    return Provider.of<WebviewProvider>(context, listen: false)
+                    return Provider.of<WebViewProvider>(context, listen: false)
                         .addedSites[index];
                   },
                 ),

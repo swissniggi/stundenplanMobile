@@ -40,8 +40,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SecurityProvider>(
           create: (_) => SecurityProvider(),
         ),
-        ChangeNotifierProvider<WebviewProvider>(
-          create: (_) => WebviewProvider(),
+        ChangeNotifierProvider<WebViewProvider>(
+          create: (_) => WebViewProvider(),
         ),
       ],
       child: MaterialApp(
@@ -109,6 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response['success'] == true) {
       Provider.of<UserProvider>(context, listen: false).username =
           response['username'];
+      await Provider.of<WebViewProvider>(context, listen: false)
+          .getWebsites(context);
       Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
     } else {
       dialog.showCustomDialog(

@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:NAWI/providers/user_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/webview_provider.dart';
 import '../services/xmlRequest_service.dart';
 
 class SecurityProvider with ChangeNotifier {
@@ -33,6 +37,21 @@ class SecurityProvider with ChangeNotifier {
     if (response['success'] == true) {
       _bioAuthIsEnabled = response['hasBioAuth'] == "1";
     }
+  }
+
+  void logoutUser(ctx) async {
+    List<String> websites =
+        Provider.of<WebViewProvider>(ctx, listen: false).addedWebsites;
+    var body = new Map<String, dynamic>();
+    body["function"] = 'logoutUser';
+
+    if (websites.isNotEmpty) {
+      body["username"] = Provider.of<UserProvider>(ctx, listen: false).username;
+      body["websites"] = jsonEncode(websites);
+    }
+
+    XmlRequestService.createPost(body);
+    Navigator.of(ctx).pushReplacementNamed('/');
   }
 
   bool get bioAuthIsEnabled {

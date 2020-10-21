@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../screens/dropDowns_screen.dart';
 import '../screens/settings_screen.dart';
 import '../providers/user_provider.dart';
-import '../services/xmlRequest_service.dart';
+import '../providers/security_provider.dart';
 
 class WelcomeDrawer extends StatelessWidget {
   Future<void> _goToFHNW() async {
@@ -19,13 +19,6 @@ class WelcomeDrawer extends StatelessWidget {
 
   void _getToSettings(ctx) {
     Navigator.of(ctx).pushReplacementNamed(SettingsScreen.routeName);
-  }
-
-  void _logoutUser(ctx) {
-    var body = new Map<String, dynamic>();
-    body["function"] = 'logoutUser';
-    XmlRequestService.createPost(body);
-    Navigator.of(ctx).pushReplacementNamed('/');
   }
 
   Widget _setRowItem(
@@ -52,7 +45,7 @@ class WelcomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String username = Provider.of<UserProvider>(context).currentUser.username;
+    String username = Provider.of<UserProvider>(context).username;
     return Drawer(
       child: Container(
         color: Theme.of(context).primaryColor,
@@ -129,7 +122,8 @@ class WelcomeDrawer extends StatelessWidget {
               'Ausloggen',
               Icons.exit_to_app,
               () {
-                _logoutUser(context);
+                Provider.of<SecurityProvider>(context, listen: false)
+                    .logoutUser(context);
               },
             ),
           ],

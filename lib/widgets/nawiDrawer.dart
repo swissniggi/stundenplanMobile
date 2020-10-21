@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/user_provider.dart';
-import '../services/xmlRequest_service.dart';
+import '../providers/security_provider.dart';
 
 class NawiDrawer extends StatelessWidget {
   final String route;
@@ -18,13 +18,6 @@ class NawiDrawer extends StatelessWidget {
 
   void _getBack(ctx) {
     Navigator.of(ctx).pushReplacementNamed(route);
-  }
-
-  void _logoutUser(ctx) {
-    var body = new Map<String, dynamic>();
-    body["function"] = 'logoutUser';
-    XmlRequestService.createPost(body);
-    Navigator.of(ctx).pushReplacementNamed('/');
   }
 
   Widget _setRowItem(
@@ -51,7 +44,7 @@ class NawiDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String username = Provider.of<UserProvider>(context).currentUser.username;
+    String username = Provider.of<UserProvider>(context).username;
     return Drawer(
       child: Container(
         color: Theme.of(context).primaryColor,
@@ -120,7 +113,8 @@ class NawiDrawer extends StatelessWidget {
               'Ausloggen',
               Icons.exit_to_app,
               () {
-                _logoutUser(context);
+                Provider.of<SecurityProvider>(context, listen: false)
+                    .logoutUser(context);
               },
             ),
           ],
