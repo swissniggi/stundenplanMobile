@@ -1,21 +1,21 @@
-import 'package:NAWI/providers/webview_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/tabledata_provider.dart';
-import 'providers/user_provider.dart';
-import 'providers/security_provider.dart';
 import 'screens/timeTable_screen.dart';
 import 'screens/dropDowns_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/settings_screen.dart';
+import 'providers/webview_provider.dart';
+import 'providers/tabledata_provider.dart';
+import 'providers/user_provider.dart';
+import 'providers/security_provider.dart';
+import 'services/xmlRequest_service.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 import 'widgets/showDialog.dart';
-import 'services/xmlRequest_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

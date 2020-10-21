@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../services/xmlRequest_service.dart';
 import '../widgets/customFormField.dart';
 import '../widgets/paddingButton.dart';
 import '../widgets/showDialog.dart';
-import '../services/xmlRequest_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';

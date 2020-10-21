@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 
+import 'welcome_screen.dart';
 import '../providers/security_provider.dart';
 import '../providers/user_provider.dart';
-import 'welcome_screen.dart';
 import '../services/xmlRequest_service.dart';
 import '../widgets/nawiDrawer.dart';
 

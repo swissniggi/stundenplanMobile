@@ -1,17 +1,17 @@
-import 'package:NAWI/screens/welcome_screen.dart';
-import 'package:NAWI/widgets/nawiDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'timeTable_screen.dart';
+import '../screens/welcome_screen.dart';
 import '../providers/tabledata_provider.dart';
 import '../providers/user_provider.dart';
+import '../services/xmlRequest_service.dart';
 import '../widgets/paddingButton.dart';
 import '../widgets/paddingDropDownButton.dart';
 import '../widgets/paddingRadio.dart';
 import '../widgets/showDialog.dart';
 import '../widgets/simpleText.dart';
-import '../services/xmlRequest_service.dart';
-import 'timeTable_screen.dart';
+import '../widgets/nawiDrawer.dart';
 
 class DropDownsScreen extends StatefulWidget {
   static const routeName = '/topicSelection';

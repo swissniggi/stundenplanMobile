@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:NAWI/widgets/welcomeCarouselItem.dart';
+
+import '../widgets/welcomeCarouselItem.dart';
 
 class WebviewProvider with ChangeNotifier {
   List<WelcomeCarouselItem> _addedSites = new List();

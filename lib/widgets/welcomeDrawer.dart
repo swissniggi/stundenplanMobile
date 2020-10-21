@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../services/xmlRequest_service.dart';
-import '../providers/user_provider.dart';
 import '../screens/dropDowns_screen.dart';
 import '../screens/settings_screen.dart';
+import '../providers/user_provider.dart';
+import '../services/xmlRequest_service.dart';
 
 class WelcomeDrawer extends StatelessWidget {
   Future<void> _goToFHNW() async {

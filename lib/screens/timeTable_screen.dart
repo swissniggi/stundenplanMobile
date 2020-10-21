@@ -1,12 +1,12 @@
-import 'package:NAWI/screens/dropDowns_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/dropDowns_screen.dart';
 import '../providers/tabledata_provider.dart';
+import '../models/pointers.dart';
 import '../widgets/nawiDrawer.dart';
 import '../widgets/tableContainer.dart';
 import '../widgets/tableInkwell.dart';
-import '../models/pointers.dart';
 
 class TimeTableScreen extends StatefulWidget {
   static const routeName = '/timeTables';

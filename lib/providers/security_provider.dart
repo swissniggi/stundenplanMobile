@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:NAWI/services/xmlRequest_service.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+
+import '../services/xmlRequest_service.dart';
 
 class SecurityProvider with ChangeNotifier {
   LocalAuthentication _localAuth = LocalAuthentication();
