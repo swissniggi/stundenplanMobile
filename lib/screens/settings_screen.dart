@@ -17,7 +17,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   LocalAuthentication _localAuth = LocalAuthentication();
-  bool _bioAuthIsEnabled = false;
 
   Future _setBioAuth(BuildContext context, bool value) async {
     bool didAuthenticate = await _localAuth.authenticateWithBiometrics(
@@ -49,6 +48,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool bioAuthIsEnabled =
+        Provider.of<SecurityProvider>(context, listen: false).bioAuthIsEnabled;
     bool canFingerprintAuth =
         Provider.of<SecurityProvider>(context, listen: false)
             .canFingerprintAuth;
@@ -62,20 +63,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ? Row(
                 children: [
                   Switch(
-                    value: _bioAuthIsEnabled,
+                    value: bioAuthIsEnabled,
                     onChanged: (value) async {
                       if (value) {
                         bool authenticated = await _setBioAuth(context, value);
 
                         if (authenticated) {
                           setState(() {
-                            _bioAuthIsEnabled = value;
+                            bioAuthIsEnabled = value;
                           });
                         }
                       } else {
                         _deleteFingerprint(context, value);
                         setState(() {
-                          _bioAuthIsEnabled = value;
+                          bioAuthIsEnabled = value;
                         });
                       }
                     },

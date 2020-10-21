@@ -1,4 +1,4 @@
-package com.example.bstundenplanMobile
+package com.example.stundenplanMobile
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

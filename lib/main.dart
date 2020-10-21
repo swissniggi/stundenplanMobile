@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/tabledata_provider.dart';
@@ -68,11 +71,36 @@ class _MyHomePageState extends State<MyHomePage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void _loginUser() async {
+  void _getBioAuthData(BuildContext context) async {
+    Provider.of<SecurityProvider>(context, listen: false).checkBiometrics();
+    await Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
+    await Provider.of<SecurityProvider>(context, listen: false)
+        .checkBioAuthisEnabled();
+
+    if (Provider.of<SecurityProvider>(context, listen: false)
+        .bioAuthIsEnabled) {
+      LocalAuthentication localAuth = LocalAuthentication();
+      bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+          localizedReason: 'Mit Fingerprint anmelden');
+
+      if (didAuthenticate) {
+        _loginUser(withFingerprint: true);
+      }
+    }
+  }
+
+  void _loginUser({withFingerprint = false}) async {
     var body = new Map<String, dynamic>();
     body["function"] = 'loginUser';
-    body["username"] = usernameController.text;
-    body["password"] = passwordController.text;
+    body["app"] = "mobile";
+
+    if (!withFingerprint) {
+      body["username"] = usernameController.text;
+      body["password"] = passwordController.text;
+    } else {
+      body["deviceId"] =
+          Provider.of<SecurityProvider>(context, listen: false).deviceId;
+    }
 
     Map<String, dynamic> response = await XmlRequestService.createPost(body);
     ShowDialog dialog = new ShowDialog();
@@ -99,8 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<SecurityProvider>(context, listen: false).checkBiometrics();
-    Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
+    _getBioAuthData(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
