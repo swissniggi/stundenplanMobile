@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:NAWI/providers/webview_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -40,6 +39,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<SecurityProvider>(
           create: (_) => SecurityProvider(),
+        ),
+        ChangeNotifierProvider<WebviewProvider>(
+          create: (_) => WebviewProvider(),
         ),
       ],
       child: MaterialApp(

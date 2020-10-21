@@ -1,13 +1,13 @@
+import 'package:NAWI/providers/webview_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/user_provider.dart';
 import '../widgets/welcomeDrawer.dart';
-import '../widgets/welcomeGridTile.dart';
+import '../widgets/welcomeCarouselItem.dart';
 import '../widgets/welcomeWebView.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -18,8 +18,6 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  List<WelcomeGridTile> _gridTiles = new List<WelcomeGridTile>();
-
   void _addWebView() async {
     String externalSource = await prompt(
       context,
@@ -27,18 +25,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       title: Text(
           'Geben Sie die Adresse der Webseite an, die Sie anzeigen möchten: '),
     );
-    setState(() {
-      WelcomeGridTile newWebView = WelcomeGridTile(
-        InkWell(
-          onTap: () async {
-            String url = externalSource;
-            await launch(url);
-          },
-          child: WelcomeWebView(ValueKey(externalSource), externalSource),
-        ),
-      );
-      _gridTiles.insert(0, newWebView);
-    });
+    if (externalSource != null) {
+      setState(() {
+        WelcomeCarouselItem newWebView = WelcomeCarouselItem(
+          WelcomeWebView(ValueKey(externalSource), externalSource),
+        );
+        Provider.of<WebviewProvider>(context, listen: false).newListitem =
+            newWebView;
+      });
+    }
   }
 
   @override
@@ -62,15 +57,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     initializeDateFormatting();
 
-    if (_gridTiles.isEmpty) {
-      _gridTiles.add(
-        WelcomeGridTile(
-          IconButton(
-            iconSize: 40,
-            icon: Icon(Icons.add_box),
-            color: Colors.grey,
-            onPressed: _addWebView,
-          ),
+    if (Provider.of<WebviewProvider>(context, listen: false)
+        .addedSites
+        .isEmpty) {
+      Provider.of<WebviewProvider>(context, listen: false).newListitem =
+          WelcomeCarouselItem(
+        IconButton(
+          iconSize: 50,
+          icon: Icon(Icons.add_box),
+          color: Colors.white,
+          onPressed: _addWebView,
         ),
       );
     }
@@ -97,8 +93,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
             ),
             Container(
-              color: Theme.of(context).accentColor,
-              margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
+              color: Theme.of(context).primaryColor,
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
               padding: EdgeInsets.all(10),
               child: Center(
                 child: Text(
@@ -114,17 +110,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
             ),
             Expanded(
-              child: GridView(
-                padding: EdgeInsets.all(8),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 1 / 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+                child: PageView.builder(
+                  itemCount:
+                      Provider.of<WebviewProvider>(context, listen: false)
+                          .addedSites
+                          .length,
+                  controller: PageController(viewportFraction: 0.9),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Provider.of<WebviewProvider>(context, listen: false)
+                        .addedSites[index];
+                  },
                 ),
-                children: [
-                  ..._gridTiles,
-                ],
               ),
             ),
           ],

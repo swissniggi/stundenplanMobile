@@ -23,6 +23,7 @@ class SecurityProvider with ChangeNotifier {
     });
   }
 
+  // this function has a return type of Future so it can be awaited
   Future getDeviceId() async {
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
 
@@ -35,6 +36,7 @@ class SecurityProvider with ChangeNotifier {
     }
   }
 
+  // this function has a return type of Future so it can be awaited
   Future checkBioAuthisEnabled() async {
     var body = new Map<String, dynamic>();
     body["function"] = 'checkBioAuth';
