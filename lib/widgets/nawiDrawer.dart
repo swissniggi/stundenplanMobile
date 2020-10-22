@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../screens/welcome_screen.dart';
 import '../providers/user_provider.dart';
 import '../providers/security_provider.dart';
 
@@ -18,6 +19,10 @@ class NawiDrawer extends StatelessWidget {
 
   void _getBack(ctx) {
     Navigator.of(ctx).pushReplacementNamed(route);
+  }
+
+  void _getToMain(ctx) {
+    Navigator.of(ctx).pushReplacementNamed(WelcomeScreen.routeName);
   }
 
   Widget _setRowItem(
@@ -95,9 +100,17 @@ class NawiDrawer extends StatelessWidget {
             _setRowItem(
               context,
               'FHNW-Homepage',
-              Icons.home,
+              Icons.open_in_browser,
               () {
                 _goToFHNW();
+              },
+            ),
+            _setRowItem(
+              context,
+              'Zum Hauptmenü',
+              Icons.home,
+              () {
+                _getToMain(context);
               },
             ),
             _setRowItem(

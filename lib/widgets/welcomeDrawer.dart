@@ -96,7 +96,7 @@ class WelcomeDrawer extends StatelessWidget {
             _setRowItem(
               context,
               'FHNW-Homepage',
-              Icons.home,
+              Icons.open_in_browser,
               () {
                 _goToFHNW();
               },
