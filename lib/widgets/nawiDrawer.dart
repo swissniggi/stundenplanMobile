@@ -105,18 +105,21 @@ class NawiDrawer extends StatelessWidget {
                 _goToFHNW();
               },
             ),
-            _setRowItem(
-              context,
-              'Zum Hauptmenü',
-              Icons.home,
-              () {
-                _getToMain(context);
-              },
-            ),
+            if (!route.contains(WelcomeScreen.routeName))
+              _setRowItem(
+                context,
+                'Zum Hauptmenü',
+                Icons.home,
+                () {
+                  _getToMain(context);
+                },
+              ),
             _setRowItem(
               context,
               targetName,
-              Icons.keyboard_return,
+              route.contains(WelcomeScreen.routeName)
+                  ? Icons.home
+                  : Icons.keyboard_return,
               () {
                 _getBack(context);
               },
