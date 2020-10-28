@@ -72,6 +72,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  bool _isLoading = false;
 
   void _getBioAuthData(BuildContext context) async {
     await Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
@@ -91,6 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loginUser({withFingerprint = false}) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     var body = new Map<String, dynamic>();
     body["function"] = 'loginUser';
     body["app"] = "mobile";
@@ -109,8 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response['success'] == true) {
       Provider.of<UserProvider>(context, listen: false).username =
           response['username'];
+
       await Provider.of<WebViewProvider>(context, listen: false)
           .getWebsites(context);
+
       Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
     } else {
       dialog.showCustomDialog(
@@ -121,6 +128,10 @@ class _MyHomePageState extends State<MyHomePage> {
         context,
         [Text(response['message'])],
       );
+
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -130,7 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _getBioAuthData(context);
+    if (!_isLoading) {
+      _getBioAuthData(context);
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -141,29 +155,33 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Image.asset("assets/img/fhnw.jpg"),
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomFormField(
-              'Benutzername',
-              usernameController,
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomFormField(
+                    'Benutzername',
+                    usernameController,
+                  ),
+                  CustomFormField(
+                    'Passwort',
+                    passwordController,
+                    obscureText: true,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      PaddingButton('Login', _loginUser),
+                      PaddingButton('Registrieren', _registerUser)
+                    ],
+                  ),
+                ],
+              ),
             ),
-            CustomFormField(
-              'Passwort',
-              passwordController,
-              obscureText: true,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PaddingButton('Login', _loginUser),
-                PaddingButton('Registrieren', _registerUser)
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
