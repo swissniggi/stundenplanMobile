@@ -20,10 +20,10 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     Map<String, Map> allData = updateTable();
     //Map<String, Map> exams = processFooterData();
     int semCount = getSemCount(allData, false);
-    List sems = ['HS', 'FS'];
-    List locations = ['Muttenz', 'Windisch'];
-    var year = new DateTime.now().year;
-    var semIndex = 1;
+    List<String> sems = ['HS', 'FS'];
+    List<String> locations = ['Muttenz', 'Windisch'];
+    int year = new DateTime.now().year;
+    int semIndex = 1;
 
     if (semCount % 2 != 0) {
       semCount++;
@@ -58,7 +58,13 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return allTables;
   }
 
-  GridView createTable(data, location, sem, year, semIndex) {
+  GridView createTable(
+    Map<String, Map> data,
+    String location,
+    String sem,
+    int year,
+    int semIndex,
+  ) {
     List<Color> colors = [
       Color(0xFFBFFFFFF),
       Color(0xFFB2E9AFE),
@@ -142,7 +148,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return table;
   }
 
-  int getSemCount(data, isCatalog) {
+  int getSemCount(Map<String, Map> data, bool isCatalog) {
     var presentYear = new DateTime.now().year;
     int lastYear = 0;
     int maxSem = 0;
@@ -241,7 +247,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return resolveOverlappingModules(allData);
   }
 
-  Map<String, Map> resolveOverlappingModules(data) {
+  Map<String, Map> resolveOverlappingModules(Map<String, Map> data) {
     bool hasDoubles = false;
     bool noMoreDoubles = false;
 

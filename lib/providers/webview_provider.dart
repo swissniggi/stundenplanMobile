@@ -1,10 +1,11 @@
+import 'package:NAWI/providers/security_provider.dart';
+import 'package:NAWI/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_provider.dart';
 import '../services/xmlRequest_service.dart';
 import '../widgets/welcomeCarouselItem.dart';
-import '../widgets/welcomeWebView.dart';
 
 class WebViewProvider with ChangeNotifier {
   List<String> _addedWebsites = new List();
@@ -17,7 +18,8 @@ class WebViewProvider with ChangeNotifier {
     body["function"] = 'getWebsites';
     body["username"] = username;
 
-    Map<String, dynamic> response = await XmlRequestService.createPost(body);
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, ctx);
 
     if (response['success'] == true) {
       List<dynamic> sites = response['websites'];
@@ -25,6 +27,11 @@ class WebViewProvider with ChangeNotifier {
       for (int i = 0; i < sites.length; i++) {
         newWebsite = sites[i];
       }
+    } else if (response['sessionTimedOut'] == true) {
+      Provider.of<SecurityProvider>(ctx, listen: false).logoutOnTimeOut(ctx);
+    } else {
+      Provider.of<SecurityProvider>(ctx, listen: false)
+          .showErrorDialog(ctx, response['message']);
     }
   }
 

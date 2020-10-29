@@ -17,11 +17,11 @@ class NawiDrawer extends StatelessWidget {
     await launch(url);
   }
 
-  void _getBack(ctx) {
+  void _getBack(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(route);
   }
 
-  void _getToMain(ctx) {
+  void _getToMain(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(WelcomeScreen.routeName);
   }
 

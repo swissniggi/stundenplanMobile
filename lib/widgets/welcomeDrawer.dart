@@ -13,11 +13,11 @@ class WelcomeDrawer extends StatelessWidget {
     await launch(url);
   }
 
-  void _getToTopicSelection(ctx) {
+  void _getToTopicSelection(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(DropDownsScreen.routeName);
   }
 
-  void _getToSettings(ctx) {
+  void _getToSettings(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(SettingsScreen.routeName);
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/security_provider.dart';
 import '../models/cells.dart';
 import '../services/xmlRequest_service.dart';
 import 'targetScrollView.dart';
@@ -18,7 +20,15 @@ class TargetCellList {
     body["function"] = 'getPossibleTargetData';
     body["modulgroupName"] = modulGroup;
 
-    Map<String, dynamic> response = await XmlRequestService.createPost(body);
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, ctx);
+
+    if (response['sessionTimedOut'] == true) {
+      Provider.of<SecurityProvider>(ctx, listen: false).logoutOnTimeOut(ctx);
+    } else if (response.containsKey('message')) {
+      Provider.of<SecurityProvider>(ctx, listen: false)
+          .showErrorDialog(ctx, response['message']);
+    }
 
     if (response != null) {
       showModalBottomSheet(

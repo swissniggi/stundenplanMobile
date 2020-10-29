@@ -30,7 +30,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body["deviceId"] =
           Provider.of<SecurityProvider>(context, listen: false).deviceId;
 
-      Map<String, dynamic> response = await XmlRequestService.createPost(body);
+      Map<String, dynamic> response =
+          await XmlRequestService.createPost(body, context);
+
+      if (response['sessionTimedOut'] == true) {
+        Provider.of<SecurityProvider>(context, listen: false)
+            .logoutOnTimeOut(context);
+      } else if (response.containsKey('message')) {
+        Provider.of<SecurityProvider>(context, listen: false)
+            .showErrorDialog(context, response['message']);
+      }
+
       return response['success'];
     }
 
@@ -38,12 +48,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return false;
   }
 
-  void _deleteFingerprint(BuildContext context, bool value) {
+  Future _deleteFingerprint(BuildContext context, bool value) async {
     var body = new Map<String, dynamic>();
     body["function"] = 'deleteDeviceId';
-    body["username"] = Provider.of<UserProvider>(context).username;
+    body["username"] =
+        Provider.of<UserProvider>(context, listen: false).username;
 
-    XmlRequestService.createPost(body);
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, context);
+
+    if (response['sessionTimedOut'] == true) {
+      Provider.of<SecurityProvider>(context, listen: false)
+          .logoutOnTimeOut(context);
+    } else if (response.containsKey('message')) {
+      Provider.of<SecurityProvider>(context, listen: false)
+          .showErrorDialog(context, response['message']);
+    }
   }
 
   @override
@@ -66,13 +86,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 if (authenticated) {
                   setState(() {
-                    bioAuthIsEnabled = value;
+                    Provider.of<SecurityProvider>(context, listen: false)
+                        .bioAuthIsEnabled = value;
                   });
                 }
               } else {
                 _deleteFingerprint(context, value);
                 setState(() {
-                  bioAuthIsEnabled = value;
+                  Provider.of<SecurityProvider>(context, listen: false)
+                      .bioAuthIsEnabled = value;
                 });
               }
             },

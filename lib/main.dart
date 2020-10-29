@@ -15,7 +15,6 @@ import 'providers/security_provider.dart';
 import 'services/xmlRequest_service.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
-import 'widgets/showDialog.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _getBioAuthData(BuildContext context) async {
     await Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
     await Provider.of<SecurityProvider>(context, listen: false)
-        .checkBioAuthisEnabled();
+        .checkBioAuthisEnabled(context);
 
     if (Provider.of<SecurityProvider>(context, listen: false)
         .bioAuthIsEnabled) {
@@ -91,25 +90,28 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _loginUser({withFingerprint = false}) async {
+  void _loginUser({bool withFingerprint = false}) async {
     setState(() {
       _isLoading = true;
     });
 
     var body = new Map<String, dynamic>();
+    SecurityProvider securityProvider =
+        Provider.of<SecurityProvider>(context, listen: false);
+    await securityProvider.createSecurityToken();
+
     body["function"] = 'loginUser';
-    body["app"] = "mobile";
+    body["loginTime"] = securityProvider.loginTime;
 
     if (!withFingerprint) {
       body["username"] = usernameController.text;
       body["password"] = passwordController.text;
     } else {
-      body["deviceId"] =
-          Provider.of<SecurityProvider>(context, listen: false).deviceId;
+      body["deviceId"] = securityProvider.deviceId;
     }
 
-    Map<String, dynamic> response = await XmlRequestService.createPost(body);
-    ShowDialog dialog = new ShowDialog();
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, context);
 
     if (response['success'] == true) {
       Provider.of<UserProvider>(context, listen: false).username =
@@ -120,14 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
     } else {
-      dialog.showCustomDialog(
-        'Fehler',
-        () {
-          Navigator.of(context).pop();
-        },
-        context,
-        [Text(response['message'])],
-      );
+      Provider.of<SecurityProvider>(context, listen: false)
+          .showErrorDialog(context, response['message']);
 
       setState(() {
         _isLoading = false;

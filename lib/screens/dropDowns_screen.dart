@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'timeTable_screen.dart';
 import '../screens/welcome_screen.dart';
+import '../providers/security_provider.dart';
 import '../providers/tabledata_provider.dart';
 import '../providers/user_provider.dart';
 import '../services/xmlRequest_service.dart';
@@ -23,7 +24,7 @@ class DropDownsScreen extends StatefulWidget {
 class _DropDownsScreenState extends State<DropDownsScreen> {
   String selectedCatalog;
 
-  var _groupValue = -1;
+  int _groupValue = -1;
   List<String> locations = ['Muttenz', 'Windisch'];
 
   List<String> userCatalog = [];
@@ -55,7 +56,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
     }
   }
 
-  PaddingDropDownButton _createDropDown(var index) {
+  PaddingDropDownButton _createDropDown(int index) {
     return PaddingDropDownButton(
         index,
         (String newValue) => setState(
@@ -68,7 +69,8 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
         Provider.of<UserProvider>(context, listen: false).username;
     body["function"] = 'getCatalogsOfUser';
     body["username"] = username;
-    Map<String, dynamic> response = await XmlRequestService.createPost(body);
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, context);
 
     if (response['success'] == true) {
       if (response['0'].length > 0) {
@@ -87,6 +89,9 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
           }
         }
       }
+    } else if (response['sessionTimedOut'] == true) {
+      Provider.of<SecurityProvider>(context, listen: false)
+          .logoutOnTimeOut(context);
     }
   }
 
@@ -118,14 +123,23 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
             PaddingDropDownButton.selectedValues[2];
       }
 
-      Map<String, dynamic> response = await XmlRequestService.createPost(body);
+      Map<String, dynamic> response =
+          await XmlRequestService.createPost(body, context);
 
-      Provider.of<TableDataProvider>(context, listen: false).newTableData =
-          response;
-      Provider.of<TableDataProvider>(context, listen: false).isCatalog =
-          isCatalog;
+      if (response['success']) {
+        Provider.of<TableDataProvider>(context, listen: false).newTableData =
+            response;
+        Provider.of<TableDataProvider>(context, listen: false).isCatalog =
+            isCatalog;
 
-      Navigator.of(context).pushReplacementNamed(TimeTableScreen.routeName);
+        Navigator.of(context).pushReplacementNamed(TimeTableScreen.routeName);
+      } else if (response['sessionTimedOut'] == true) {
+        Provider.of<SecurityProvider>(context, listen: false)
+            .logoutOnTimeOut(context);
+      } else {
+        Provider.of<SecurityProvider>(context, listen: false)
+            .showErrorDialog(context, response['message']);
+      }
     } else {
       ShowDialog dialog = new ShowDialog();
       dialog.showCustomDialog(

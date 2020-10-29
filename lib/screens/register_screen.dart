@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/security_provider.dart';
 import '../services/xmlRequest_service.dart';
 import '../widgets/customFormField.dart';
 import '../widgets/paddingButton.dart';
@@ -24,7 +26,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     body["usermail"] = usermailController.text;
     body["password"] = passwordController.text;
 
-    Map<String, dynamic> response = await XmlRequestService.createPost(body);
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, context);
     ShowDialog dialog = new ShowDialog();
 
     if (response['success'] == true) {
@@ -38,16 +41,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ],
       );
     } else {
-      dialog.showCustomDialog(
-        'Fehler',
-        () => Navigator.of(context).pop(),
-        context,
-        [
-          Text(
-            response['message'],
-          ),
-        ],
-      );
+      Provider.of<SecurityProvider>(context, listen: false)
+          .showErrorDialog(context, response['message']);
     }
   }
 
