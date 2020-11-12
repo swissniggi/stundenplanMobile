@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "736166702384",
+    "firebase_url": "https://nawi-mobile.firebaseio.com",
+    "project_id": "nawi-mobile",
+    "storage_bucket": "nawi-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736166702384:android:bfc745c2519252c9652cf5",
+        "android_client_info": {
+          "package_name": "com.nawi.studiApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736166702384-9pvgksuc443okiv5tt47eac7imjajjgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqhsakqgU87TwxQuYDrPd6F1Tct8AX4zg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "736166702384-9pvgksuc443okiv5tt47eac7imjajjgo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
