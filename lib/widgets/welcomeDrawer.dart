@@ -1,3 +1,4 @@
+import 'package:NAWI/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,6 +16,10 @@ class WelcomeDrawer extends StatelessWidget {
 
   void _getToTopicSelection(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(DropDownsScreen.routeName);
+  }
+
+  void _getToChat(BuildContext ctx) {
+    Navigator.of(ctx).pushReplacementNamed(ChatScreen.routeName);
   }
 
   void _getToSettings(BuildContext ctx) {
@@ -107,6 +112,14 @@ class WelcomeDrawer extends StatelessWidget {
               Icons.select_all,
               () {
                 _getToTopicSelection(context);
+              },
+            ),
+            _setRowItem(
+              context,
+              'Chat',
+              Icons.chat,
+              () {
+                _getToChat(context);
               },
             ),
             _setRowItem(

@@ -27,6 +27,11 @@ dependencies:
   prompt_dialog: ^0.1.1
   flutter_inappwebview: ^4.0.0
   local_auth: ^0.6.3+3
+  firebase_core: ^0.5.1
+  firebase_analytics: ^6.1.0
+  firebase_auth: ^0.18.2
+  cloud_firestore: ^0.14.2
+  image_picker: ^0.6.7+12
   flutter_launcher_icons: ^0.8.1
 
 

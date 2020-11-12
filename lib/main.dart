@@ -1,3 +1,6 @@
+import 'package:NAWI/screens/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -25,39 +28,44 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserProvider>(
-          create: (_) => UserProvider(),
+    return FutureBuilder(
+      future: _initialization,
+      builder: (ctx, snapshot) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider<UserProvider>(
+            create: (_) => UserProvider(),
+          ),
+          ChangeNotifierProvider<TableDataProvider>(
+            create: (_) => TableDataProvider(),
+          ),
+          ChangeNotifierProvider<SecurityProvider>(
+            create: (_) => SecurityProvider(),
+          ),
+          ChangeNotifierProvider<WebViewProvider>(
+            create: (_) => WebViewProvider(),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Stundenplan FHNW',
+          theme: ThemeData(
+            primaryColor: Color(0xfffbe400),
+            indicatorColor: Color(0xff050262),
+          ),
+          initialRoute: '/',
+          routes: {
+            '/': (ctx) => MyHomePage(),
+            RegisterScreen.routeName: (ctx) => RegisterScreen(),
+            WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
+            SettingsScreen.routeName: (ctx) => SettingsScreen(),
+            DropDownsScreen.routeName: (ctx) => DropDownsScreen(),
+            TimeTableScreen.routeName: (ctx) => TimeTableScreen(),
+            ChatScreen.routeName: (ctx) => ChatScreen(),
+          },
         ),
-        ChangeNotifierProvider<TableDataProvider>(
-          create: (_) => TableDataProvider(),
-        ),
-        ChangeNotifierProvider<SecurityProvider>(
-          create: (_) => SecurityProvider(),
-        ),
-        ChangeNotifierProvider<WebViewProvider>(
-          create: (_) => WebViewProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Stundenplan FHNW',
-        theme: ThemeData(
-          primaryColor: Color(0xfffbe400),
-          indicatorColor: Color(0xff050262),
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (ctx) => MyHomePage(),
-          RegisterScreen.routeName: (ctx) => RegisterScreen(),
-          WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
-          SettingsScreen.routeName: (ctx) => SettingsScreen(),
-          DropDownsScreen.routeName: (ctx) => DropDownsScreen(),
-          TimeTableScreen.routeName: (ctx) => TimeTableScreen(),
-        },
       ),
     );
   }
@@ -100,30 +108,51 @@ class _MyHomePageState extends State<MyHomePage> {
         Provider.of<SecurityProvider>(context, listen: false);
     await securityProvider.createSecurityToken();
 
-    body["function"] = 'loginUser';
-    body["loginTime"] = securityProvider.loginTime;
+    String errorMessage = '';
 
-    if (!withFingerprint) {
-      body["username"] = usernameController.text;
-      body["password"] = passwordController.text;
-    } else {
-      body["deviceId"] = securityProvider.deviceId;
+    try {
+      body["function"] = 'loginUser';
+      body["loginTime"] = securityProvider.loginTime;
+
+      if (!withFingerprint) {
+        body["username"] = usernameController.text;
+        body["password"] = passwordController.text;
+      } else {
+        body["deviceId"] = securityProvider.deviceId;
+      }
+
+      Map<String, dynamic> response =
+          await XmlRequestService.createPost(body, context);
+
+      if (response['success'] == true) {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: response['email'], password: response['pwHash']);
+
+        Provider.of<UserProvider>(context, listen: false).username =
+            response['username'];
+
+        await Provider.of<WebViewProvider>(context, listen: false)
+            .getWebsites(context);
+
+        Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
+      } else {
+        errorMessage = response['message'];
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        errorMessage = 'Benutzer nicht gefunden!';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Das angegebene Passwort ist falsch!';
+      } else {
+        errorMessage = e.toString();
+      }
+    } catch (e) {
+      errorMessage = e.toString();
     }
 
-    Map<String, dynamic> response =
-        await XmlRequestService.createPost(body, context);
-
-    if (response['success'] == true) {
-      Provider.of<UserProvider>(context, listen: false).username =
-          response['username'];
-
-      await Provider.of<WebViewProvider>(context, listen: false)
-          .getWebsites(context);
-
-      Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
-    } else {
+    if (errorMessage != '') {
       Provider.of<SecurityProvider>(context, listen: false)
-          .showErrorDialog(context, response['message']);
+          .showErrorDialog(context, errorMessage);
 
       setState(() {
         _isLoading = false;

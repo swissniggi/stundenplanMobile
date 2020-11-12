@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,29 +21,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordController = TextEditingController();
 
   void _registerUser() async {
-    var body = new Map<String, dynamic>();
-    body["function"] = 'registerUser';
-    body["username"] = usernameController.text;
-    body["usermail"] = usermailController.text;
-    body["password"] = passwordController.text;
+    String errorMessage = '';
 
-    Map<String, dynamic> response =
-        await XmlRequestService.createPost(body, context);
-    ShowDialog dialog = new ShowDialog();
+    try {
+      var body = new Map<String, dynamic>();
+      body["function"] = 'registerUser';
+      body["username"] = usernameController.text;
+      body["usermail"] = usermailController.text;
+      body["password"] = passwordController.text;
 
-    if (response['success'] == true) {
-      dialog.showCustomDialog(
-        'Registrierung erfolgreich',
-        () => Navigator.of(context).pushReplacementNamed('/'),
-        context,
-        [
-          Text('Sie wurden erfolgreich registriert.'
-              'Bitten checken Sie Ihre Mails.'),
-        ],
-      );
-    } else {
+      // register user in fhnw-db
+      Map<String, dynamic> response =
+          await XmlRequestService.createPost(body, context, withToken: false);
+      ShowDialog dialog = new ShowDialog();
+
+      if (response['success'] == true) {
+        // register user in firebase
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: usermailController.text, password: response['pwHash']);
+
+        dialog.showCustomDialog(
+          'Registrierung erfolgreich',
+          () => Navigator.of(context).pushReplacementNamed('/'),
+          context,
+          [
+            Text('Sie wurden erfolgreich registriert.'
+                'Bitten checken Sie Ihre Mails.'),
+          ],
+        );
+      } else {
+        throw Exception(response['message']);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        errorMessage =
+            'Ein Benutzer mit der eingegebenen Emailadresse existiert bereits.';
+      } else {
+        errorMessage = e.toString();
+      }
+    } catch (e) {
+      errorMessage = e.toString();
+    }
+
+    if (errorMessage != '') {
       Provider.of<SecurityProvider>(context, listen: false)
-          .showErrorDialog(context, response['message']);
+          .showErrorDialog(context, errorMessage);
     }
   }
 

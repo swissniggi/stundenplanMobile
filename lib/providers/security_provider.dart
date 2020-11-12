@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +46,8 @@ class SecurityProvider with ChangeNotifier {
   }
 
   Future logoutUser(BuildContext ctx) async {
+    FirebaseAuth.instance.signOut();
+
     List<String> websites =
         Provider.of<WebViewProvider>(ctx, listen: false).addedWebsites;
     var body = new Map<String, dynamic>();
