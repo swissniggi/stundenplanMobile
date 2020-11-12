@@ -14,7 +14,10 @@ class TargetScrollView extends StatefulWidget {
 }
 
 class _TargetScrollViewState extends State<TargetScrollView> {
-  _setTexts() {
+  List<Container> _foundTargetCells;
+  int _textCount = 0;
+
+  List<Container> _setTexts() {
     List<Container> displayTexts = new List<Container>();
     List<String> buttonTexts = new List<String>();
 
@@ -32,31 +35,29 @@ class _TargetScrollViewState extends State<TargetScrollView> {
     for (var i = 0; i < data.length; i++) {
       for (var j = 0; j < pointer[i].length; j++) {
         pointer[i][j].content.forEach((key, value) {
-          List<String> yearAndSemAndLoc = key.split('.');
-          String year = yearAndSemAndLoc[0];
-          String sem = yearAndSemAndLoc[1];
-          String location = yearAndSemAndLoc[2];
-          String dayIndex = data[i]['Wochentag'];
-          String timeSlot = data[i]['Beginn'];
-          String day = weekDays[int.parse(data[i]['Wochentag']) - 1];
-          String possibleId = dayIndex +
-              '.' +
-              timeSlot +
-              '.' +
-              location +
-              '.' +
-              sem +
-              '.' +
-              year;
-          bool hasContent = value;
+          if (value) {
+            List<String> yearAndSemAndLoc = key.split('.');
+            String year = yearAndSemAndLoc[0];
+            String sem = yearAndSemAndLoc[1];
+            String location = yearAndSemAndLoc[2];
+            String dayIndex = data[i]['Wochentag'];
+            String timeSlot = data[i]['Beginn'];
+            String day = weekDays[int.parse(data[i]['Wochentag']) - 1];
+            String possibleId = dayIndex +
+                '.' +
+                timeSlot +
+                '.' +
+                location +
+                '.' +
+                sem +
+                '.' +
+                year;
 
-          if (hasContent == false &&
-              possibleId != Cells.selectedCell.id &&
-              sem == data[i]['Semester'] &&
-              location == data[i]['Ort']) {
-            String text = '$location, $sem $year, am $day um $timeSlot:00';
-            if (buttonTexts.indexOf(text) == -1) {
-              buttonTexts.add(text);
+            if (possibleId != Cells.selectedCell.id) {
+              String text = '$location, $sem $year, am $day um $timeSlot:00';
+              if (buttonTexts.indexOf(text) == -1) {
+                buttonTexts.add(text);
+              }
             }
           }
         });
@@ -80,6 +81,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
       ));
     }
 
+    _textCount = displayTexts.length;
     return displayTexts;
   }
 
@@ -90,13 +92,16 @@ class _TargetScrollViewState extends State<TargetScrollView> {
 
     TableContainer targetCell = _getTargetCell(text, dayPart, slotPart);
 
-    setState(() {
+    /* setState(() {
       String targetId = targetCell.id;
       String selectedId = selected.id;
       String selectedText = selected.childText;
       Color textColor = selected.textStyleColor;
       Color decColor = selected.decorationColor;
-    });
+
+      targetCell =
+          new TableContainer(selectedText, textColor, decColor, selectedId);
+    }); */
   }
 
   TableContainer _getTargetCell(String text, String dayPart, String slotPart) {
@@ -155,11 +160,26 @@ class _TargetScrollViewState extends State<TargetScrollView> {
 
   @override
   Widget build(BuildContext context) {
+    _foundTargetCells = _setTexts();
     return SingleChildScrollView(
       child: Card(
         child: Container(
           child: Column(
-            children: [..._setTexts()],
+            children: _textCount > 0
+                ? [
+                    ..._foundTargetCells,
+                  ]
+                : [
+                    Center(
+                      child: Container(
+                        height: 60,
+                        child: Text(
+                          'Keine freien Slots gefunden',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ],
           ),
         ),
       ),

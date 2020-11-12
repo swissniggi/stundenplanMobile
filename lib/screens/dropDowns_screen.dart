@@ -22,8 +22,8 @@ class DropDownsScreen extends StatefulWidget {
 }
 
 class _DropDownsScreenState extends State<DropDownsScreen> {
-  String selectedCatalog;
-
+  String _selectedCatalog;
+  bool _isLoading = false;
   int _groupValue = -1;
   List<String> locations = ['Muttenz', 'Windisch'];
 
@@ -35,7 +35,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
       var catalogs = Padding(
         padding: const EdgeInsets.all(30.0),
         child: new DropdownButton<String>(
-            value: selectedCatalog,
+            value: _selectedCatalog,
             icon: Icon(Icons.arrow_drop_down),
             iconSize: 28,
             elevation: 16,
@@ -46,7 +46,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
             }).toList(),
             onChanged: (String newValue) {
               setState(() {
-                selectedCatalog = newValue;
+                _selectedCatalog = newValue;
               });
             }),
       );
@@ -75,8 +75,8 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
     if (response['success'] == true) {
       if (response['0'].length > 0) {
         if (userCatalog.length == 0) {
-          selectedCatalog = ' -- Wählen Sie einen Stundenplan aus -- ';
-          userCatalog.add(selectedCatalog);
+          _selectedCatalog = ' -- Wählen Sie einen Stundenplan aus -- ';
+          userCatalog.add(_selectedCatalog);
         }
         for (var i = 0; i < response['0'].length; i++) {
           var dateArray = response['0'][i]['Erstellt'].split('-');
@@ -103,13 +103,17 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
             PaddingDropDownButton.selectedValues[2] !=
                 PaddingDropDownButton.dropDownValues[0] &&
             _groupValue >= 0) ||
-        (selectedCatalog != null && selectedCatalog != userCatalog[0])) {
+        (_selectedCatalog != null && _selectedCatalog != userCatalog[0])) {
+      setState(() {
+        _isLoading = true;
+      });
+
       var body = new Map<String, dynamic>();
 
       bool isCatalog = false;
 
-      if (selectedCatalog != null && selectedCatalog != userCatalog[0]) {
-        var catalogId = userCatalog.indexOf(selectedCatalog);
+      if (_selectedCatalog != null && _selectedCatalog != userCatalog[0]) {
+        var catalogId = userCatalog.indexOf(_selectedCatalog);
         body["function"] = 'getModulesOfUser';
         body["catalogId"] = catalogId.toString();
         isCatalog = true;
@@ -139,6 +143,10 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
       } else {
         Provider.of<SecurityProvider>(context, listen: false)
             .showErrorDialog(context, response['message']);
+
+        setState(() {
+          _isLoading = false;
+        });
       }
     } else {
       ShowDialog dialog = new ShowDialog();
@@ -164,31 +172,37 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
         centerTitle: true,
       ),
       drawer: NawiDrawer(WelcomeScreen.routeName, 'Zum Hauptmenü'),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _createDropDown(0),
-            _createDropDown(1),
-            _createDropDown(2),
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-              PaddingRadio(0, _groupValue,
-                  (value) => setState(() => _groupValue = value)),
-              SimpleText('Muttenz')
-            ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                PaddingRadio(1, _groupValue,
-                    (value) => setState(() => _groupValue = value)),
-                SimpleText('Windisch')
-              ],
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _createDropDown(0),
+                  _createDropDown(1),
+                  _createDropDown(2),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        PaddingRadio(0, _groupValue,
+                            (value) => setState(() => _groupValue = value)),
+                        SimpleText('Muttenz')
+                      ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      PaddingRadio(1, _groupValue,
+                          (value) => setState(() => _groupValue = value)),
+                      SimpleText('Windisch')
+                    ],
+                  ),
+                  _createCatalogs(),
+                  PaddingButton('Stundenplan erstellen', _createTimeTables),
+                ],
+              ),
             ),
-            _createCatalogs(),
-            PaddingButton('Stundenplan erstellen', _createTimeTables),
-          ],
-        ),
-      ),
     );
   }
 }

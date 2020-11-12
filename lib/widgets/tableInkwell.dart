@@ -7,7 +7,7 @@ import 'targetCellList.dart';
 
 class TableInkwell {
   final BuildContext ctx;
-  final Map<dynamic, dynamic> tableData;
+  final Map<String, dynamic> tableData;
   final List<Color> colors;
   final List<Pointer> pointerList;
 
@@ -15,16 +15,16 @@ class TableInkwell {
 
   List<Widget> buildList() {
     List<Widget> wells = new List<Widget>();
-    bool hasContent = false;
 
     for (var i = 0; i < pointerList.length; i++) {
+      bool hasContent = false;
       String module = '';
       String year = '';
       String sem = '';
       String location = '';
       int type = 0;
 
-      if (tableData[pointerList[i].id] != null) {
+      if (tableData.containsKey(pointerList[i].id)) {
         hasContent = true;
         module = tableData[pointerList[i].id]['name'];
         year = tableData[pointerList[i].id]['year'].toString();

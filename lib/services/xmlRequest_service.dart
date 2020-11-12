@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:NAWI/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../providers/user_provider.dart';
 import '../providers/security_provider.dart';
 
 class XmlRequestService {

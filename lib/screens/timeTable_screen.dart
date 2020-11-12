@@ -75,7 +75,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
       Color(0xFFBF1C40F)
     ];
 
-    Map tableData = new Map();
+    Map<String, dynamic> tableData = new Map();
 
     data.forEach((key, value) {
       if (data[key]['year'] == year &&
