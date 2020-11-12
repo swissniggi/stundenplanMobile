@@ -1,11 +1,6 @@
 name: NAWI
 description: Stundenplanapp für die pädagogische Hochschule
 
-flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/img/fhnw.jpg"
-
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -26,13 +21,14 @@ dependencies:
     sdk: flutter
   shared_preferences: ^0.5.12+2
   device_info: ^0.4.2+9
-  flutter_launcher_icons: ^0.7.5
   url_launcher: ^5.7.2
   provider: ^4.3.2
   intl: ^0.16.1
   prompt_dialog: ^0.1.1
   flutter_inappwebview: ^4.0.0
   local_auth: ^0.6.3+3
+  flutter_launcher_icons: ^0.8.1
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -42,6 +38,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: dev_assets/fhnw.jpg
 
 
 # For information on the generic Dart part of this file, see the

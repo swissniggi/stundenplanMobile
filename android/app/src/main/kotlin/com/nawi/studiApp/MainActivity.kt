@@ -1,4 +1,4 @@
-package com.example.stundenplanMobile
+package com.nawi.studiApp
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
