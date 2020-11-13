@@ -40,4 +40,8 @@ class UserProvider with ChangeNotifier {
     final User currentUser = this._user;
     return currentUser;
   }
+
+  void reset() {
+    _user = new User();
+  }
 }

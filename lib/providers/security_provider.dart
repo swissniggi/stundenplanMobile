@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:NAWI/providers/tabledata_provider.dart';
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,13 @@ class SecurityProvider with ChangeNotifier {
       body["websites"] = jsonEncode(websites);
     }
 
-    XmlRequestService.createPost(body, ctx);
+    await XmlRequestService.createPost(body, ctx);
+
+    Provider.of<TableDataProvider>(ctx, listen: false).reset();
+    Provider.of<WebViewProvider>(ctx, listen: false).reset();
+    Provider.of<UserProvider>(ctx, listen: false).reset();
+    reset();
+
     Navigator.of(ctx).pushReplacementNamed('/');
   }
 
@@ -108,5 +115,12 @@ class SecurityProvider with ChangeNotifier {
 
   String get deviceId {
     return _deviceId;
+  }
+
+  void reset() {
+    _bioAuthIsEnabled = false;
+    _deviceId = null;
+    _loginTime = null;
+    _securityToken = null;
   }
 }

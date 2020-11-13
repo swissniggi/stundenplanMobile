@@ -22,4 +22,9 @@ class TableDataProvider with ChangeNotifier {
   bool get isCatalog {
     return this._isCatalog;
   }
+
+  void reset() {
+    _tableData = new Map<String, dynamic>();
+    _isCatalog = false;
+  }
 }

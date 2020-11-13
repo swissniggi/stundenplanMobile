@@ -56,4 +56,9 @@ class WebViewProvider with ChangeNotifier {
     final List<String> addedWebsites = this._addedWebsites;
     return addedWebsites;
   }
+
+  void reset() {
+    _addedSites = [];
+    _addedWebsites = [];
+  }
 }
