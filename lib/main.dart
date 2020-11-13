@@ -119,6 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       await Provider.of<WebViewProvider>(context, listen: false)
           .getWebsites(context);
+      await Provider.of<UserProvider>(context, listen: false)
+          .getProfilePictureFromDB(context);
 
       Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
     } else {

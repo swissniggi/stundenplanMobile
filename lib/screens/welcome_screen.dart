@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -42,6 +44,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     String username =
         Provider.of<UserProvider>(context, listen: false).username;
+    File profilePicture =
+        Provider.of<UserProvider>(context, listen: false).user.profilePicture;
     TimeOfDay currentTime = TimeOfDay.now();
     String salutation;
 
@@ -95,15 +99,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
               child: Center(
-                child: Text(
-                  '$salutation \n$username',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: profilePicture.path == ''
+                          ? AssetImage('assets/img/blank-profile-picture.png')
+                          : FileImage(profilePicture),
+                    ),
+                    Text(
+                      '$salutation \n$username',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ),
