@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Return a simple customized [Text].
 class SimpleText extends StatelessWidget {
+  /// The text of the created widget.
   final String text;
 
   SimpleText(this.text);

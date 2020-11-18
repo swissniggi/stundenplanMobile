@@ -1,24 +1,32 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:NAWI/providers/tabledata_provider.dart';
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/tabledata_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/webview_provider.dart';
 import '../services/xmlRequest_service.dart';
 import '../widgets/showDialog.dart';
 
+/// A provider for security.
 class SecurityProvider with ChangeNotifier {
+  /// A boolean to determine whether authentication by fingerprint is enabled.
   bool _bioAuthIsEnabled;
+
+  /// The id of the device in use.
   String _deviceId;
+
+  /// The time when the user has loged in.
   String _loginTime;
+
+  /// A random security token.
   String _securityToken;
 
-  // this function has a return type of Future so it can be awaited
+  /// Get the id of the device in use.
   Future getDeviceId() async {
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
 
@@ -31,7 +39,8 @@ class SecurityProvider with ChangeNotifier {
     }
   }
 
-  // this function has a return type of Future so it can be awaited
+  /// Get data from the server to determine whether authentication by fingerprint was enabled.
+  /// [ctx] the given [BuildContext]
   Future checkBioAuthisEnabled(BuildContext ctx) async {
     var body = new Map<String, dynamic>();
     body["function"] = 'checkBioAuth';
@@ -45,9 +54,12 @@ class SecurityProvider with ChangeNotifier {
     }
   }
 
+  /// Logout the current user.
+  /// [ctx] the given [BuildContext].
+  /// redirects to the main screen.
   Future logoutUser(BuildContext ctx) async {
     List<String> websites =
-        Provider.of<WebViewProvider>(ctx, listen: false).addedWebsites;
+        Provider.of<WebViewProvider>(ctx, listen: false).addedUrls;
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
 
@@ -66,6 +78,8 @@ class SecurityProvider with ChangeNotifier {
     Navigator.of(ctx).pushReplacementNamed('/');
   }
 
+  /// Logout the current user when the security token is no longer valid.
+  /// [ctx] the given [BuildContext].
   void logoutOnTimeOut(BuildContext ctx) {
     ShowDialog dialog = new ShowDialog();
     dialog.showCustomDialog(
@@ -78,6 +92,7 @@ class SecurityProvider with ChangeNotifier {
     );
   }
 
+  /// Create a security token
   Future createSecurityToken() async {
     String loginTime = DateTime.now().toIso8601String();
     List<int> loginTimeBytes = utf8.encode(loginTime);
@@ -85,6 +100,9 @@ class SecurityProvider with ChangeNotifier {
     _securityToken = sha256.convert(loginTimeBytes).toString();
   }
 
+  /// Show a dialog displaying the given error message.
+  /// [ctx] the given [BuildContext].
+  /// [errorMessage] the given error message.
   void showErrorDialog(BuildContext ctx, String errorMessage) {
     ShowDialog dialog = new ShowDialog();
     dialog.showCustomDialog(
@@ -97,26 +115,32 @@ class SecurityProvider with ChangeNotifier {
     );
   }
 
+  /// Getter for [_securityToken].
   String get securityToken {
     return _securityToken.substring(0);
   }
 
+  /// Getter for [_loginTime].
   String get loginTime {
     return _loginTime;
   }
 
+  /// Getter for [_bioAuthEnabled].
   bool get bioAuthIsEnabled {
     return this._bioAuthIsEnabled;
   }
 
-  set bioAuthIsEnabled(bool isEnabled) {
-    _bioAuthIsEnabled = isEnabled;
-  }
-
+  /// Getter for [_deviceId].
   String get deviceId {
     return _deviceId;
   }
 
+  /// Setter for [_bioAuthEnabled].
+  set bioAuthIsEnabled(bool isEnabled) {
+    _bioAuthIsEnabled = isEnabled;
+  }
+
+  /// Reset all properties of this class.
   void reset() {
     _bioAuthIsEnabled = false;
     _deviceId = null;

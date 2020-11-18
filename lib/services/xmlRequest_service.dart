@@ -10,6 +10,13 @@ import '../providers/security_provider.dart';
 class XmlRequestService {
   static String url = 'https://nawi.li/PHP/main.php';
 
+  /// Send a request and handle the response.
+  /// [body] a [Map] with data to send with the request.
+  /// [ctx] the given [BuildContext].
+  /// [withToken] a boolean to determine whether a token
+  /// should be added to [body]; default `true`.
+  /// returns the response data if successful.
+  /// throws an [Exception] if an error occurs.
   static Future<Map<String, dynamic>> createPost(Map body, BuildContext ctx,
       {bool withToken = true}) async {
     body['app'] = 'mobile';

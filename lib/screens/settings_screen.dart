@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:NAWI/widgets/snackbarText.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:local_auth/local_auth.dart';
@@ -14,8 +13,11 @@ import '../providers/user_provider.dart';
 import '../services/xmlRequest_service.dart';
 import '../widgets/nawiDrawer.dart';
 import '../widgets/settingsIconButton.dart';
+import '../widgets/snackbarText.dart';
 
+/// Return a [Scaffold] displaying the settings screen.
 class SettingsScreen extends StatefulWidget {
+  /// The route name of the screen.
   static const routeName = '/settings';
 
   @override
@@ -27,6 +29,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   LocalAuthentication _localAuth = LocalAuthentication();
   File _profilePic;
 
+  /// Set a profile phot (or replace it).
+  /// [source] the image source, either camera or gallery.
+  /// returns `false` if no photo was chosen.
+  /// returns `true` if the photo was successfully set/changed.
+  /// calls [showErrorDialog()] if an error has occured.
   // ignore: missing_return
   Future<bool> _setProfilePhoto(ImageSource source) async {
     ImagePicker picker = new ImagePicker();
@@ -68,6 +75,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  /// Enable authentication with fingerprint.
+  /// [context] the given [BuildContext].
+  /// returns `true` if authentication with fingerprint was successfully enabled.
+  /// returns `false` if authentication with fingerprint failed.
+  /// calls [showErrorDialog()] if an error occurs.
   Future _setBioAuth(BuildContext context) async {
     bool didAuthenticate = await _localAuth.authenticateWithBiometrics(
         localizedReason: 'Mit Fingerprint anmelden');
@@ -91,12 +103,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             .showErrorDialog(context, response['message']);
       }
 
-      return response['success'];
+      return true;
     }
 
     return false;
   }
 
+  /// Disable authentication with fingerprint.
+  /// [context] the given [BuildContext].
+  /// calls [showErrorDialog()] if an error occurs.
   Future _deleteFingerprint(BuildContext context) async {
     var body = new Map<String, dynamic>();
     body["function"] = 'deleteDeviceId';
@@ -115,6 +130,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  /// Handle onPressed event of authentication [FlatButton].
+  /// [bioAuthIsEnabled] a boolean to determine whether authentication by fingerprint is enabled.
+  /// calls [_setBioAuth()] if [bioAuthIsEnabled] == `false`.
+  /// else calls [_deleteFingerprint()].
   Future _onSetBioAuthPressed(bool bioAuthIsEnabled) async {
     if (!bioAuthIsEnabled) {
       bool authenticated = await _setBioAuth(context);
@@ -139,6 +158,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
+  /// Calls [showModalBottomSheet] when the users wants to set/change his profile photo.
+  /// Leaves the user to choose the [ImageSource].
   void _onSetPhotoPressed() {
     showModalBottomSheet(
       context: context,

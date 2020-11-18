@@ -8,7 +8,9 @@ import '../widgets/nawiDrawer.dart';
 import '../widgets/tableContainer.dart';
 import '../widgets/tableInkwell.dart';
 
+/// Return a [Scaffold] displaying the timetable screen.
 class TimeTableScreen extends StatefulWidget {
+  /// The route name of the screen.
   static const routeName = '/timeTables';
 
   @override
@@ -16,6 +18,8 @@ class TimeTableScreen extends StatefulWidget {
 }
 
 class _TimeTableScreenState extends State<TimeTableScreen> {
+  /// Configure the tables to be displayed.
+  /// returns a [GridView].
   GridView configureTables() {
     Map<String, Map> allData = updateTable();
     //Map<String, Map> exams = processFooterData();
@@ -58,6 +62,13 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return allTables;
   }
 
+  /// Create a new table.
+  /// [data] the data to fill the table with.
+  /// [location] the location for which the data is displayed.
+  /// [sem] the sem for which the data is displayed.
+  /// [year] the year for which the data is displayed.
+  /// [semIndex] the index of the semester for which the data is displayed.
+  /// returns a [GridView].
   GridView createTable(
     Map<String, Map> data,
     String location,
@@ -148,6 +159,10 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return table;
   }
 
+  /// Determine how many semesters must be displayed.
+  /// [data] the data for all modules of the chosen topics.
+  /// [isCatalog] a boolean to determine whether the data comes from a saved catalog.
+  /// returns an [int].
   int getSemCount(Map<String, Map> data, bool isCatalog) {
     var presentYear = new DateTime.now().year;
     int lastYear = 0;
@@ -174,6 +189,8 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return semCount >= maxSem ? semCount : maxSem;
   }
 
+  /// Process the data of the exams.
+  /// returns a [Map].
   Map<String, Map> processFooterData() {
     Map<String, dynamic> fullData =
         Provider.of<TableDataProvider>(context, listen: false).tableData;
@@ -215,6 +232,9 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return pruefungen;
   }
 
+  /// Process the data received from the server
+  /// to get it into a useful form.
+  /// returns a [Map].
   Map<String, Map> updateTable() {
     Map<String, dynamic> fullData =
         Provider.of<TableDataProvider>(context, listen: false).tableData;
@@ -247,6 +267,9 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return resolveOverlappingModules(allData);
   }
 
+  /// Find overlapping modules and move one to resolve the problem.
+  /// [data] the processed module data.
+  /// returns a [Map].
   Map<String, Map> resolveOverlappingModules(Map<String, Map> data) {
     bool hasDoubles = false;
     bool noMoreDoubles = false;

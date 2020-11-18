@@ -12,7 +12,9 @@ import '../widgets/welcomeDrawer.dart';
 import '../widgets/welcomeCarouselItem.dart';
 import '../widgets/welcomeWebView.dart';
 
+/// Return a [Scaffold] displaying the welcome screen.
 class WelcomeScreen extends StatefulWidget {
+  /// The route name of the screen.
   static const routeName = '/welcome';
 
   @override
@@ -20,6 +22,7 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  /// Add a new [WelcomeCarouselItem] containing a [WelcomeWebView] the the screen.
   void _addWebView() async {
     String externalSource = await prompt(
       context,
@@ -32,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         WelcomeCarouselItem newWebView = WelcomeCarouselItem(
           WelcomeWebView(ValueKey(externalSource), externalSource),
         );
-        Provider.of<WebViewProvider>(context, listen: false).newWebsite =
+        Provider.of<WebViewProvider>(context, listen: false).newUrl =
             externalSource;
         Provider.of<WebViewProvider>(context, listen: false).newListitem =
             newWebView;
@@ -77,7 +80,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       );
 
       List<String> presetSites =
-          Provider.of<WebViewProvider>(context, listen: false).addedWebsites;
+          Provider.of<WebViewProvider>(context, listen: false).addedUrls;
 
       if (presetSites.isNotEmpty) {
         for (int i = 0; i < presetSites.length; i++) {

@@ -14,7 +14,9 @@ import '../widgets/showDialog.dart';
 import '../widgets/simpleText.dart';
 import '../widgets/nawiDrawer.dart';
 
+/// Return a [Scaffold] displaying the dropdown screen.
 class DropDownsScreen extends StatefulWidget {
+  /// The route name of the screen.
   static const routeName = '/topicSelection';
 
   @override
@@ -25,13 +27,16 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
   String _selectedCatalog;
   bool _isLoading = false;
   int _groupValue = -1;
-  List<String> locations = ['Muttenz', 'Windisch'];
+  List<String> _locations = ['Muttenz', 'Windisch'];
 
-  List<String> userCatalog = [];
+  List<String> _userCatalog = [];
 
+  /// Create a dropdown with the given catalog data.
+  /// returns a [Padding] containing the dropdown if there are any catalogs
+  /// else returns an empty [Padding].
   Padding _createCatalogs() {
     _prepareCatalogData();
-    if (userCatalog.isNotEmpty) {
+    if (_userCatalog.isNotEmpty) {
       var catalogs = Padding(
         padding: const EdgeInsets.all(30.0),
         child: new DropdownButton<String>(
@@ -41,7 +46,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
             elevation: 16,
             isExpanded: true,
             style: TextStyle(fontSize: 22, color: Colors.black),
-            items: userCatalog.map((String value) {
+            items: _userCatalog.map((String value) {
               return DropdownMenuItem<String>(value: value, child: Text(value));
             }).toList(),
             onChanged: (String newValue) {
@@ -63,6 +68,8 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
             () => PaddingDropDownButton.selectedValues[index] = newValue));
   }
 
+  /// Get the catalogs of the current user from the server.
+  /// fills [_userCatalog] with the response data if any received.
   void _prepareCatalogData() async {
     var body = new Map<String, dynamic>();
     String username =
@@ -74,9 +81,9 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
 
     if (response['success'] == true) {
       if (response['0'].length > 0) {
-        if (userCatalog.length == 0) {
+        if (_userCatalog.length == 0) {
           _selectedCatalog = ' -- Wählen Sie einen Stundenplan aus -- ';
-          userCatalog.add(_selectedCatalog);
+          _userCatalog.add(_selectedCatalog);
         }
         for (var i = 0; i < response['0'].length; i++) {
           var dateArray = response['0'][i]['Erstellt'].split('-');
@@ -84,8 +91,8 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
           var catalog =
               response['0'][i]['Bezeichnung'] + ', erstellt am ' + datum;
 
-          if (!userCatalog.contains(catalog)) {
-            userCatalog.add(catalog);
+          if (!_userCatalog.contains(catalog)) {
+            _userCatalog.add(catalog);
           }
         }
       }
@@ -95,7 +102,12 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
     }
   }
 
-  void _createTimeTables() async {
+  /// Get the timetable data from the server
+  /// and redirect to the [TimeTableScreen].
+  /// call [showCustomDialog()] if less than 3 topics have been chosen
+  /// or if no location has been chosen.
+  /// call [showErrorDialog()] if an error occurs.
+  void _getTimeTableDataAndRedirect() async {
     if ((PaddingDropDownButton.selectedValues[0] !=
                 PaddingDropDownButton.dropDownValues[0] &&
             PaddingDropDownButton.selectedValues[1] !=
@@ -103,7 +115,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
             PaddingDropDownButton.selectedValues[2] !=
                 PaddingDropDownButton.dropDownValues[0] &&
             _groupValue >= 0) ||
-        (_selectedCatalog != null && _selectedCatalog != userCatalog[0])) {
+        (_selectedCatalog != null && _selectedCatalog != _userCatalog[0])) {
       setState(() {
         _isLoading = true;
       });
@@ -112,14 +124,14 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
 
       bool isCatalog = false;
 
-      if (_selectedCatalog != null && _selectedCatalog != userCatalog[0]) {
-        var catalogId = userCatalog.indexOf(_selectedCatalog);
+      if (_selectedCatalog != null && _selectedCatalog != _userCatalog[0]) {
+        var catalogId = _userCatalog.indexOf(_selectedCatalog);
         body["function"] = 'getModulesOfUser';
         body["catalogId"] = catalogId.toString();
         isCatalog = true;
       } else {
         body["function"] = 'getAllModules';
-        body["location"] = locations[_groupValue] == 'Muttenz' ? 'MU' : 'WI';
+        body["location"] = _locations[_groupValue] == 'Muttenz' ? 'MU' : 'WI';
         body["faecher"] = PaddingDropDownButton.selectedValues[0] +
             ',' +
             PaddingDropDownButton.selectedValues[1] +
@@ -199,7 +211,8 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
                     ],
                   ),
                   _createCatalogs(),
-                  PaddingButton('Stundenplan erstellen', _createTimeTables),
+                  PaddingButton(
+                      'Stundenplan erstellen', _getTimeTableDataAndRedirect),
                 ],
               ),
             ),

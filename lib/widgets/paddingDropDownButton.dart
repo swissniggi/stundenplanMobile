@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 
 import 'customText.dart';
 
+/// Return a [Padding] containing a customized [DropdownButton].
 class PaddingDropDownButton extends StatelessWidget {
+  /// The index of the selected value.
   final int index;
+
+  /// The function to be called when the selection changes.
   final Function onChangedFunc;
 
   PaddingDropDownButton(this.index, this.onChangedFunc);
 
+  /// A [List] of the default selected values.
   static List<String> selectedValues = [
     ' -- Wählen Sie ein Fach aus -- ',
     ' -- Wählen Sie ein Fach aus -- ',
     ' -- Wählen Sie ein Fach aus -- '
   ];
 
+  /// A [List] of all selectable values.
   static List<String> dropDownValues = [
     ' -- Wählen Sie ein Fach aus -- ',
     'Bildnerisches Gestalten',
@@ -52,6 +58,10 @@ class PaddingDropDownButton extends StatelessWidget {
     );
   }
 
+  /// Determine wheter a [DropDownMenuItem] is selectable or not
+  /// [index] the index of the given value
+  /// [value] the given value
+  /// returns `false` if the [DropDownMenuItem] is selectable otherwise `true`
   bool isDisabled(int index, String value) {
     return selectedValues[index] != value && selectedValues.contains(value);
   }

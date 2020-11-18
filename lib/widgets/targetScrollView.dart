@@ -4,7 +4,9 @@ import '../models/cells.dart';
 import '../models/pointers.dart';
 import 'tableContainer.dart';
 
+/// Return a customized [SingleChildScrollView].
 class TargetScrollView extends StatefulWidget {
+  /// A [Map] containing the data of all possible targets.
   final Map<String, dynamic> wellTexts;
 
   TargetScrollView(this.wellTexts);
@@ -17,7 +19,9 @@ class _TargetScrollViewState extends State<TargetScrollView> {
   List<Container> _foundTargetCells;
   int _textCount = 0;
 
-  List<Container> _setTexts() {
+  /// Create buttons for all possible targets.
+  /// return a [List] of [Containers] (child = [RaisedButton]).
+  List<Container> _createTargetButtons() {
     List<Container> displayTexts = new List<Container>();
     List<String> buttonTexts = new List<String>();
 
@@ -87,10 +91,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
 
   void _moveCell(String text) {
     TableContainer selected = Cells.selectedCell;
-    String dayPart;
-    String slotPart;
-
-    TableContainer targetCell = _getTargetCell(text, dayPart, slotPart);
+    TableContainer targetCell = _getTargetCell(text);
 
     /* setState(() {
       String targetId = targetCell.id;
@@ -104,7 +105,11 @@ class _TargetScrollViewState extends State<TargetScrollView> {
     }); */
   }
 
-  TableContainer _getTargetCell(String text, String dayPart, String slotPart) {
+  /// Determine the target cell.
+  /// [text] contains the text of the selected cell.
+  /// return a [TableContainer].
+  TableContainer _getTargetCell(String text) {
+    String dayPart, slotPart;
     List<String> weekDays = [
       'Montag',
       'Dienstag',
@@ -160,7 +165,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    _foundTargetCells = _setTexts();
+    _foundTargetCells = _createTargetButtons();
     return SingleChildScrollView(
       child: Card(
         child: Container(

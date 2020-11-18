@@ -6,10 +6,17 @@ import '../providers/user_provider.dart';
 import '../services/xmlRequest_service.dart';
 import '../widgets/welcomeCarouselItem.dart';
 
+/// A provider for the webvies of the [WelcomeScreen].
 class WebViewProvider with ChangeNotifier {
-  List<String> _addedWebsites = new List();
+  /// A [List] of the websites the user has added.
+  List<String> _addedUrls = new List();
+
+  /// A [List] of [WelcomeCarouselItem]s each containing a [WelcomeWebView].
   List<WelcomeCarouselItem> _addedSites = new List();
 
+  /// Get the websites the user has set from the server.
+  /// [ctx] the given [BuildContext].
+  /// calls [showErrorDialog()] if an error occurs.
   Future getWebsites(BuildContext ctx) async {
     String username = Provider.of<UserProvider>(ctx, listen: false).username;
 
@@ -24,7 +31,7 @@ class WebViewProvider with ChangeNotifier {
       List<dynamic> sites = response['websites'];
 
       for (int i = 0; i < sites.length; i++) {
-        newWebsite = sites[i];
+        newUrl = sites[i];
       }
     } else if (response['sessionTimedOut'] == true) {
       Provider.of<SecurityProvider>(ctx, listen: false).logoutOnTimeOut(ctx);
@@ -34,31 +41,37 @@ class WebViewProvider with ChangeNotifier {
     }
   }
 
+  /// Setter for [_addesSites] before the [WelcomeScreen] gets loaded.
   set initialListItem(WelcomeCarouselItem newListItem) {
     this._addedSites.insert(0, newListItem);
   }
 
+  /// Setter for [_addesSites] once the [WelcomeScreen] has been loaded.
   set newListitem(WelcomeCarouselItem newListItem) {
     this._addedSites.insert(0, newListItem);
     notifyListeners();
   }
 
-  set newWebsite(String newWebsite) {
-    this._addedWebsites.add(newWebsite);
+  /// Setter for new URLs to be added to [_addedUrls].
+  set newUrl(String newUrl) {
+    this._addedUrls.add(newUrl);
   }
 
+  /// Getter for [_addedSites].
   List<WelcomeCarouselItem> get addedSites {
     final List<WelcomeCarouselItem> addedSites = this._addedSites;
     return addedSites;
   }
 
-  List<String> get addedWebsites {
-    final List<String> addedWebsites = this._addedWebsites;
-    return addedWebsites;
+  /// Getter for [_addedUrls].
+  List<String> get addedUrls {
+    final List<String> addedUrls = this._addedUrls;
+    return addedUrls;
   }
 
+  /// Reset all properties of this class.
   void reset() {
     _addedSites = [];
-    _addedWebsites = [];
+    _addedUrls = [];
   }
 }

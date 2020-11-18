@@ -16,6 +16,7 @@ import 'services/xmlRequest_service.dart';
 import 'widgets/customFormField.dart';
 import 'widgets/paddingButton.dart';
 
+/// Main function.
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -24,8 +25,8 @@ void main() {
   runApp(MyApp());
 }
 
+/// Main class.
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -73,6 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final passwordController = TextEditingController();
   bool _isLoading = false;
 
+  /// Display fingerprint login prompt and.
+  /// call [_loginUser()] when successfull.
   void _getBioAuthData(BuildContext context) async {
     await Provider.of<SecurityProvider>(context, listen: false).getDeviceId();
     await Provider.of<SecurityProvider>(context, listen: false)
@@ -90,6 +93,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  /// Send the given login data to server
+  /// and redirect to welcome page if successfull.
+  /// otherwise call [showErrorDialog()].
+  /// [withFingerprint] a boolean to determine whether the user
+  /// tries to login using a finger print; default  `false`.
   void _loginUser({bool withFingerprint = false}) async {
     setState(() {
       _isLoading = true;
@@ -133,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  /// Redirect to [RegisterScreen].
   void _registerUser() {
     Navigator.of(context).pushReplacementNamed(RegisterScreen.routeName);
   }

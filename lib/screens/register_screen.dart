@@ -7,7 +7,9 @@ import '../widgets/customFormField.dart';
 import '../widgets/paddingButton.dart';
 import '../widgets/showDialog.dart';
 
+/// Returns a [Scaffold] displaying the register screen.
 class RegisterScreen extends StatefulWidget {
+  /// The route name of the screen.
   static const routeName = '/register';
 
   @override
@@ -19,6 +21,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final usermailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  /// Send the given register data to the server
+  /// and redirect to the main screen if successful.
+  /// otherwise call [showErrorDialog()].
   void _registerUser() async {
     var body = new Map<String, dynamic>();
     body["function"] = 'registerUser';

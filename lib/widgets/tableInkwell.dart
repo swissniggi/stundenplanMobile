@@ -6,15 +6,24 @@ import 'tableContainer.dart';
 import 'targetCellList.dart';
 
 class TableInkwell {
+  /// The given [BuildContext].
   final BuildContext ctx;
+
+  /// The data to be display in the [InkWell]s.
   final Map<String, dynamic> tableData;
+
+  /// a [List] of all module colors.
   final List<Color> colors;
+
+  /// a [List] of [Pointer]s containing the id's of modules.
   final List<Pointer> pointerList;
 
   TableInkwell(this.ctx, this.tableData, this.colors, this.pointerList);
 
-  List<Widget> buildList() {
-    List<Widget> wells = new List<Widget>();
+  /// Creates a [List] of [InkWell]s either empty
+  /// or containing the data of the designated module.
+  List<InkWell> buildList() {
+    List<InkWell> wells = new List<InkWell>();
 
     for (var i = 0; i < pointerList.length; i++) {
       bool hasContent = false;

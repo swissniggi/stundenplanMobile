@@ -7,6 +7,9 @@ import '../services/xmlRequest_service.dart';
 import 'targetScrollView.dart';
 
 class TargetCellList {
+  /// Get all possible targets and
+  /// call [showModalBottomSheet()] to display them.
+  /// [modulName] contains the name of the chosen module.
   void showTargetCells(String modulName, BuildContext ctx) async {
     String modulGroup = modulName.substring(0, modulName.length - 3);
 

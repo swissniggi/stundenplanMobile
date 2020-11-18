@@ -7,20 +7,29 @@ import '../screens/settings_screen.dart';
 import '../providers/user_provider.dart';
 import '../providers/security_provider.dart';
 
+/// Return a [Drawer] for the [WelcomeScreen].
 class WelcomeDrawer extends StatelessWidget {
+  /// Redirect to external webpage.
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
   }
 
+  /// Redirect to [DropDownsScreen].
   void _getToTopicSelection(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(DropDownsScreen.routeName);
   }
 
+  /// Redirect to [SettingsScreen].
   void _getToSettings(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(SettingsScreen.routeName);
   }
 
+  /// Create a new row item of type [Padding].
+  /// [ctx] the given [BuildContext].
+  /// [text] the text for the child of the [FlatButton].
+  /// [icon] the icon of the row item.
+  /// [pressed] the function to be called when the [FlatButton] is pressed.
   Widget _setRowItem(
       BuildContext ctx, String text, IconData icon, Function pressed) {
     return Padding(

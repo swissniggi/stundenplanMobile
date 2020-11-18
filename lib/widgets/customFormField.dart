@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// Create a customized [TextFormField].
 class CustomFormField extends StatelessWidget {
+  /// The text of the label of the [TextFormField].
   final String lableText;
+
+  /// The controller into which text input should be saved.
   final TextEditingController controller;
+
+  /// The [TextInputType] of the [TextFormField].
   final TextInputType textInputType;
+
+  /// A boolean to determine whether the text should be obscured.
   final bool obscureText;
 
   CustomFormField(

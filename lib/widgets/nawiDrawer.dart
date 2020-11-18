@@ -6,25 +6,37 @@ import '../screens/welcome_screen.dart';
 import '../providers/user_provider.dart';
 import '../providers/security_provider.dart';
 
+/// Return a [Drawer] for the [WelcomeScreen].
 class NawiDrawer extends StatelessWidget {
+  /// The route of the last visited screen.
   final String route;
+
+  /// The name of the target to go to.
   final String targetName;
 
   NawiDrawer(this.route, this.targetName);
 
+  /// Redirect to external webpage.
   Future<void> _goToFHNW() async {
     const url = "https://www.fhnw.ch";
     await launch(url);
   }
 
+  /// Redirect to last visited screen.
   void _getBack(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(route);
   }
 
+  /// Redirect to [WelcomeScreen]
   void _getToMain(BuildContext ctx) {
     Navigator.of(ctx).pushReplacementNamed(WelcomeScreen.routeName);
   }
 
+  /// Create a new row item of type [Padding].
+  /// [ctx] the given [BuildContext].
+  /// [text] the text for the child of the [FlatButton].
+  /// [icon] the icon of the row item.
+  /// [pressed] the function to be called when the [FlatButton] is pressed.
   Widget _setRowItem(
       BuildContext ctx, String text, IconData icon, Function pressed) {
     return Padding(
