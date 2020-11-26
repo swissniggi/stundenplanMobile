@@ -43,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0-nullsafety.1"
+  circular_menu:
+    dependency: "direct main"
+    description:
+      name: circular_menu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   clock:
     dependency: transitive
     description:
@@ -157,7 +164,7 @@ packages:
     source: hosted
     version: "0.12.2"
   http_parser:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http_parser
       url: "https://pub.dartlang.org"

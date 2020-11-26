@@ -1,4 +1,7 @@
+import 'package:NAWI/models/tableData.dart';
+import 'package:NAWI/providers/tabledata_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/cells.dart';
 import '../models/pointers.dart';
@@ -7,22 +10,22 @@ import 'tableContainer.dart';
 /// Return a customized [SingleChildScrollView].
 class TargetScrollView extends StatefulWidget {
   /// A [Map] containing the data of all possible targets.
-  final Map<String, dynamic> wellTexts;
+  final Map<String, dynamic> possibleTargets;
 
-  TargetScrollView(this.wellTexts);
+  TargetScrollView(this.possibleTargets);
 
   @override
   _TargetScrollViewState createState() => _TargetScrollViewState();
 }
 
 class _TargetScrollViewState extends State<TargetScrollView> {
-  List<Container> _foundTargetCells;
+  List<Widget> _foundTargetCells;
   int _textCount = 0;
 
   /// Create buttons for all possible targets.
-  /// return a [List] of [Containers] (child = [RaisedButton]).
-  List<Container> _createTargetButtons() {
-    List<Container> displayTexts = new List<Container>();
+  /// return a [List] of [Widgets] containing [Container]s (child = [RaisedButton]) and [Divider]s.
+  List<Widget> _createTargetButtons() {
+    List<Widget> displayTexts = new List<Widget>();
     List<String> buttonTexts = new List<String>();
 
     List<String> weekDays = [
@@ -33,13 +36,14 @@ class _TargetScrollViewState extends State<TargetScrollView> {
       'Freitag'
     ];
 
-    List<dynamic> data = widget.wellTexts["0"];
+    List<dynamic> data = widget.possibleTargets["0"];
     List<List<Pointer>> pointer = Pointers.pointers;
+    List<String> targetModuleNames = new List();
 
     for (var i = 0; i < data.length; i++) {
       for (var j = 0; j < pointer[i].length; j++) {
         pointer[i][j].content.forEach((key, value) {
-          if (value) {
+          if (!value) {
             List<String> yearAndSemAndLoc = key.split('.');
             String year = yearAndSemAndLoc[0];
             String sem = yearAndSemAndLoc[1];
@@ -61,6 +65,7 @@ class _TargetScrollViewState extends State<TargetScrollView> {
               String text = '$location, $sem $year, am $day um $timeSlot:00';
               if (buttonTexts.indexOf(text) == -1) {
                 buttonTexts.add(text);
+                targetModuleNames.add(data[i]['Modul']);
               }
             }
           }
@@ -72,37 +77,55 @@ class _TargetScrollViewState extends State<TargetScrollView> {
       displayTexts.add(Container(
         width: double.infinity,
         child: ButtonTheme(
-          child: RaisedButton(
+          child: FlatButton(
             child: Text(
               buttonTexts[b],
               style: TextStyle(color: Colors.black, fontSize: 16),
             ),
             onPressed: () {
-              _moveCell(buttonTexts[b]);
+              _moveCell(buttonTexts[b], targetModuleNames[b]);
             },
           ),
         ),
       ));
+
+      if (b < buttonTexts.length - 1) {
+        displayTexts.add(Divider(color: Colors.grey));
+      }
     }
 
     _textCount = displayTexts.length;
     return displayTexts;
   }
 
-  void _moveCell(String text) {
-    TableContainer selected = Cells.selectedCell;
-    TableContainer targetCell = _getTargetCell(text);
+  /// Move cell to wanted position in the table.
+  /// [buttonText] the text displayed on the pressed button
+  /// [moduleName] the name of the targeted module
+  void _moveCell(String buttonText, String moduleName) {
+    TableContainer selected = Cells.selectedCell; // here it comes from
+    TableContainer targetCell = _getTargetCell(buttonText); // here it goes to
 
-    /* setState(() {
-      String targetId = targetCell.id;
-      String selectedId = selected.id;
-      String selectedText = selected.childText;
-      Color textColor = selected.textStyleColor;
-      Color decColor = selected.decorationColor;
+    String targetId = targetCell.id;
+    List<String> targetIdParts = targetId.split(".");
 
-      targetCell =
-          new TableContainer(selectedText, textColor, decColor, selectedId);
-    }); */
+    TableData data =
+        Provider.of<TableDataProvider>(context, listen: false).tableData;
+
+    for (var modulZeile in data.modules["0"]) {
+      if (modulZeile.veranstaltung == selected.childText) {
+        modulZeile.veranstaltung = moduleName;
+        modulZeile.wochentag = int.parse(targetIdParts[0]);
+        modulZeile.beginn = int.parse(targetIdParts[1]);
+        modulZeile.ort = targetIdParts[2];
+        modulZeile.semester = targetIdParts[3];
+        modulZeile.jahr = int.parse(targetIdParts[4]);
+      }
+    }
+
+    Provider.of<TableDataProvider>(context, listen: false)
+        .manipulatedTableData = data;
+
+    Navigator.of(context).pop();
   }
 
   /// Determine the target cell.

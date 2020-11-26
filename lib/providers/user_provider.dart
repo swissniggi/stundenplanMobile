@@ -17,8 +17,13 @@ class UserProvider with ChangeNotifier {
   }
 
   /// Setter for [_user.profilePicture].
-  set profilePicture(File picture) {
-    this._user.profilePicture = picture;
+  set profilePictureLocal(File picture) {
+    this._user.profilePictureLocal = picture;
+    notifyListeners();
+  }
+
+  set profilePictureExternal(String url) {
+    this._user.profilePictureExternal = url;
     notifyListeners();
   }
 
@@ -33,7 +38,7 @@ class UserProvider with ChangeNotifier {
         await XmlRequestService.createPost(body, ctx, withToken: false);
 
     if (response['success'] == true) {
-      profilePicture = File(response['profilePicture']);
+      profilePictureExternal = response['profilePicture'];
     }
   }
 

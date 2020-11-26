@@ -1,33 +1,50 @@
+import 'package:circular_menu/circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/dropDowns_screen.dart';
+import 'examTables_screen.dart';
+import 'dropDowns_screen.dart';
 import '../providers/tabledata_provider.dart';
 import '../models/pointers.dart';
+import '../models/tableData.dart';
 import '../widgets/nawiDrawer.dart';
 import '../widgets/tableContainer.dart';
-import '../widgets/tableInkwell.dart';
+import '../widgets/moduleTableInkwell.dart';
+import '../widgets/circularTableMenu.dart';
 
 /// Return a [Scaffold] displaying the timetable screen.
-class TimeTableScreen extends StatefulWidget {
+class ModuleTablesScreen extends StatefulWidget {
   /// The route name of the screen.
-  static const routeName = '/timeTables';
+  static const routeName = '/moduleTables';
 
   @override
-  _TimeTableScreenState createState() => _TimeTableScreenState();
+  _ModuleTablesScreenState createState() => _ModuleTablesScreenState();
 }
 
-class _TimeTableScreenState extends State<TimeTableScreen> {
+class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
+  Map<String, Map> _processedData;
+  bool _anyDoublesAtAll = false;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_anyDoublesAtAll) {
+        _updateRootData(_processedData);
+      }
+    });
+    super.initState();
+  }
+
   /// Configure the tables to be displayed.
   /// returns a [GridView].
-  GridView configureTables() {
-    Map<String, Map> allData = updateTable();
-    //Map<String, Map> exams = processFooterData();
-    int semCount = getSemCount(allData, false);
+  GridView _configureTables() {
+    Map<String, Map> allData = _updateTable();
+
+    int semCount = _getSemCount(allData, false);
     List<String> sems = ['HS', 'FS'];
+    List<int> semIndices = [1, 1];
     List<String> locations = ['Muttenz', 'Windisch'];
     int year = new DateTime.now().year;
-    int semIndex = 1;
 
     if (semCount % 2 != 0) {
       semCount++;
@@ -37,11 +54,11 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
 
     for (var i = 0; i < semCount; i++) {
       for (var j = 0; j < 2; j++) {
-        GridView table =
-            createTable(allData, locations[j % 2], sems[i % 2], year, semIndex);
+        GridView table = _createTable(
+            allData, locations[i % 2], sems[j % 2], year, semIndices[i % 2]);
         tables.add(Container(child: table));
 
-        semIndex++;
+        semIndices[i % 2]++;
       }
 
       if (i % 2 == 0) {
@@ -50,14 +67,15 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     }
 
     GridView allTables = new GridView.count(
-        primary: false,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(15),
-        childAspectRatio: (6 / 7),
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
-        crossAxisCount: 1,
-        children: tables);
+      primary: false,
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(15),
+      childAspectRatio: (6 / 7),
+      crossAxisSpacing: 15,
+      mainAxisSpacing: 15,
+      crossAxisCount: 1,
+      children: tables,
+    );
 
     return allTables;
   }
@@ -69,7 +87,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
   /// [year] the year for which the data is displayed.
   /// [semIndex] the index of the semester for which the data is displayed.
   /// returns a [GridView].
-  GridView createTable(
+  GridView _createTable(
     Map<String, Map> data,
     String location,
     String sem,
@@ -89,12 +107,12 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     Map<String, dynamic> tableData = new Map();
 
     data.forEach((key, value) {
-      if (data[key]['year'] == year &&
-          data[key]['location'] == location &&
-          data[key]['sem'] == sem) {
+      if (data[key]['location'] == location &&
+          data[key]['sem'] == sem &&
+          semIndex == data[key]['prop']) {
         var day = data[key]['day'];
         var time = data[key]['timeBegin'];
-        tableData[day + '.' + time] = value;
+        tableData[day.toString() + '.' + time.toString()] = value;
       }
     });
 
@@ -112,45 +130,63 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
         TableContainer('Do', Colors.black, Color(0xFFBE6E6FA)),
         TableContainer('Fr', Colors.black, Color(0xFFBE6E6FA)),
         TableContainer('08:00 - 10:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...TableInkwell(
+        ...ModuleTableInkwell(
           context,
           tableData,
           colors,
+          location,
+          sem,
+          year.toString(),
           Pointers.pointers[0],
         ).buildList(),
         TableContainer('10:00 - 12:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...TableInkwell(
+        ...ModuleTableInkwell(
           context,
           tableData,
           colors,
+          location,
+          sem,
+          year.toString(),
           Pointers.pointers[1],
         ).buildList(),
         TableContainer('12:00 - 14:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...TableInkwell(
+        ...ModuleTableInkwell(
           context,
           tableData,
           colors,
+          location,
+          sem,
+          year.toString(),
           Pointers.pointers[2],
         ).buildList(),
         TableContainer('14:00 - 16:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...TableInkwell(
+        ...ModuleTableInkwell(
           context,
           tableData,
           colors,
+          location,
+          sem,
+          year.toString(),
           Pointers.pointers[3],
         ).buildList(),
         TableContainer('16:00 - 18:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...TableInkwell(
+        ...ModuleTableInkwell(
           context,
           tableData,
           colors,
+          location,
+          sem,
+          year.toString(),
           Pointers.pointers[4],
         ).buildList(),
         TableContainer('18:00 - 20:00', Colors.black, Color(0xFFBE6E6FA)),
-        ...TableInkwell(
+        ...ModuleTableInkwell(
           context,
           tableData,
           colors,
+          location,
+          sem,
+          year.toString(),
           Pointers.pointers[5],
         ).buildList(),
       ],
@@ -163,7 +199,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
   /// [data] the data for all modules of the chosen topics.
   /// [isCatalog] a boolean to determine whether the data comes from a saved catalog.
   /// returns an [int].
-  int getSemCount(Map<String, Map> data, bool isCatalog) {
+  int _getSemCount(Map<String, Map> data, bool isCatalog) {
     var presentYear = new DateTime.now().year;
     int lastYear = 0;
     int maxSem = 0;
@@ -178,10 +214,6 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
       }
     });
 
-    if (!isCatalog) {
-      maxSem *= 2;
-    }
-
     int semCount = (lastYear - presentYear) * 2;
 
     semCount++;
@@ -189,67 +221,23 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
     return semCount >= maxSem ? semCount : maxSem;
   }
 
-  /// Process the data of the exams.
-  /// returns a [Map].
-  Map<String, Map> processFooterData() {
-    Map<String, dynamic> fullData =
-        Provider.of<TableDataProvider>(context, listen: false).tableData;
-    var pruefung = '';
-    var vorschlag = 0;
-    Map<String, Map> pruefungen = {};
-    var veranstaltungen = {};
-    for (var zeile in fullData['1']) {
-      var exam = {};
-      if (pruefung == zeile['Pruefung']) {
-        veranstaltungen[zeile] = zeile['Veranstaltung'];
-        if (int.parse(zeile['Vorschlag']) > vorschlag) {
-          vorschlag = int.parse(zeile['Vorschlag']);
-        }
-      } else if (pruefung == '') {
-        vorschlag = zeile['Vorschlag'];
-        pruefung = zeile['Pruefung'];
-        veranstaltungen = {};
-        veranstaltungen[zeile] = zeile['Veranstaltung'];
-      } else {
-        exam["Prüfung"] = pruefung;
-        exam["Veranstaltungen"] = veranstaltungen;
-        exam["Vorschlag"] = vorschlag;
-        pruefungen[pruefung] = exam;
-        pruefung = zeile['Pruefung'];
-        vorschlag = int.parse(zeile['Vorschlag']);
-        veranstaltungen = {};
-        veranstaltungen[zeile] = zeile['Veranstaltung'];
-      }
-    }
-    // Letzte Prüfung ebenfalls übergeben
-    if (pruefung != '') {
-      var lastExam = {};
-      lastExam["Prüfung"] = pruefung;
-      lastExam["Veranstaltungen"] = veranstaltungen;
-      lastExam["Vorschlag"] = vorschlag;
-      pruefungen[pruefung] = lastExam;
-    }
-    return pruefungen;
-  }
-
   /// Process the data received from the server
   /// to get it into a useful form.
   /// returns a [Map].
-  Map<String, Map> updateTable() {
-    Map<String, dynamic> fullData =
-        Provider.of<TableDataProvider>(context, listen: false).tableData;
+  Map<String, Map> _updateTable() {
+    TableData fullData = Provider.of<TableDataProvider>(context).tableData;
 
     Map<String, Map> allData = {};
-    for (var zeile in fullData['0']) {
-      var fach = zeile['Fach'];
-      var year = int.parse(zeile['Jahr']);
-      var sem = zeile['Semester'];
-      var prop = int.parse(zeile['Vorschlag']);
-      var name = zeile['Veranstaltung'];
-      var day = zeile['Wochentag'];
-      var timeBegin = zeile['Beginn'];
-      var color = int.parse(zeile['Typ']);
-      var location = zeile['Ort'];
+    for (var zeile in fullData.modules["0"]) {
+      var fach = zeile.fach;
+      var year = zeile.jahr;
+      var sem = zeile.semester;
+      var prop = zeile.vorschlag;
+      var name = zeile.veranstaltung;
+      var day = zeile.wochentag;
+      var timeBegin = zeile.beginn;
+      var color = zeile.typ;
+      var location = zeile.ort;
       Map<String, dynamic> data = {
         "fach": fach,
         "year": year,
@@ -258,19 +246,19 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
         "day": day,
         "timeBegin": timeBegin,
         "color": color,
-        "typ": int.parse(zeile['Typ']),
+        "typ": color,
         "prop": prop,
         "location": location
       };
       allData[data["name"]] = data;
     }
-    return resolveOverlappingModules(allData);
+    return _resolveOverlappingModules(allData);
   }
 
   /// Find overlapping modules and move one to resolve the problem.
   /// [data] the processed module data.
   /// returns a [Map].
-  Map<String, Map> resolveOverlappingModules(Map<String, Map> data) {
+  Map<String, Map> _resolveOverlappingModules(Map<String, Map> data) {
     bool hasDoubles = false;
     bool noMoreDoubles = false;
 
@@ -284,48 +272,98 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
               data[key]["sem"] == data[key2]["sem"] &&
               data[key]["day"] == data[key2]["day"] &&
               data[key]["timeBegin"] == data[key2]["timeBegin"]) {
+            _anyDoublesAtAll = true;
             hasDoubles = true;
             if (data[key2]["name"] != 'privater Termin') {
               data[key2]["year"] += 1;
-              data[key2]["prop"] += 1;
+              data[key2]["prop"] += 2;
+              Provider.of<TableDataProvider>(context, listen: false)
+                  .setFormerDuplicates(data[key2]["name"], data[key2]["prop"]);
             } else {
               data[key]["year"] += 1;
-              data[key]["prop"] += 1;
+              data[key]["prop"] += 2;
+              Provider.of<TableDataProvider>(context, listen: false)
+                  .setFormerDuplicates(data[key]["name"], data[key]["prop"]);
             }
             break;
           }
         }
       }
 
-      if (hasDoubles == false) {
+      if (!hasDoubles) {
         noMoreDoubles = true;
       }
     }
+
+    _processedData = data;
+
     return data;
+  }
+
+  /// Update the root data of the provider.
+  /// This is done so the exam tables can be created with the most recent data.
+  /// This function is called AFTER build only if there where any doubles
+  /// [processedData] the most recent data.
+  void _updateRootData(Map<String, Map> processedData) {
+    TableData fullData =
+        Provider.of<TableDataProvider>(context, listen: false).tableData;
+
+    for (var zeile in fullData.modules["0"]) {
+      for (var key in processedData.keys) {
+        if (zeile.veranstaltung == processedData[key]["name"]) {
+          zeile.jahr = processedData[key]["year"];
+          zeile.vorschlag = processedData[key]["prop"];
+        }
+      }
+    }
+
+    Provider.of<TableDataProvider>(context, listen: false)
+        .manipulatedTableData = fullData;
   }
 
   void _saveTimeTables() {}
 
   @override
   Widget build(BuildContext context) {
+    List<CircularMenuItem> menuItems = [
+      CircularMenuItem(
+        icon: Icons.save,
+        color: Colors.green,
+        iconColor: Colors.white,
+        onTap: _saveTimeTables,
+      ),
+      CircularMenuItem(
+        icon: Icons.arrow_forward,
+        color: Colors.cyan,
+        iconColor: Colors.white,
+        onTap: () {
+          Navigator.of(context).pushNamed(ExamTablesScreen.routeName);
+        },
+      ),
+      CircularMenuItem(
+        icon: Icons.poll,
+        color: Colors.blue,
+        iconColor: Colors.white,
+        onTap: () {},
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),
       ),
       drawer: NawiDrawer(DropDownsScreen.routeName, 'Zur Fachauswahl'),
-      body: Container(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: false,
-          children: [
-            configureTables(),
-          ],
+      body: CircularTableMenu(
+        menuItems,
+        Container(
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: false,
+            children: [
+              _configureTables(),
+            ],
+          ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save),
-        onPressed: _saveTimeTables,
       ),
     );
   }

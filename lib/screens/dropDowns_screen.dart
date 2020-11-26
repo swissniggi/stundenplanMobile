@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'timeTable_screen.dart';
+import 'moduleTables_screen.dart';
 import '../screens/welcome_screen.dart';
 import '../providers/security_provider.dart';
 import '../providers/tabledata_provider.dart';
@@ -103,7 +103,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
   }
 
   /// Get the timetable data from the server
-  /// and redirect to the [TimeTableScreen].
+  /// and redirect to the [ModuleTablesScreen].
   /// call [showCustomDialog()] if less than 3 topics have been chosen
   /// or if no location has been chosen.
   /// call [showErrorDialog()] if an error occurs.
@@ -145,10 +145,13 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
       if (response['success']) {
         Provider.of<TableDataProvider>(context, listen: false).newTableData =
             response;
+        Provider.of<TableDataProvider>(context, listen: false)
+            .selectedLocation = _locations[_groupValue];
         Provider.of<TableDataProvider>(context, listen: false).isCatalog =
             isCatalog;
 
-        Navigator.of(context).pushReplacementNamed(TimeTableScreen.routeName);
+        Navigator.of(context)
+            .pushReplacementNamed(ModuleTablesScreen.routeName);
       } else if (response['sessionTimedOut'] == true) {
         Provider.of<SecurityProvider>(context, listen: false)
             .logoutOnTimeOut(context);

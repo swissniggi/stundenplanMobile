@@ -47,8 +47,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     String username =
         Provider.of<UserProvider>(context, listen: false).username;
-    File profilePicture =
-        Provider.of<UserProvider>(context, listen: false).user.profilePicture;
+    File profilePictureLocal = Provider.of<UserProvider>(context, listen: false)
+        .user
+        .profilePictureLocal;
+    String profilePictureExternal =
+        Provider.of<UserProvider>(context, listen: false)
+            .user
+            .profilePictureExternal;
     TimeOfDay currentTime = TimeOfDay.now();
     String salutation;
 
@@ -108,9 +113,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: profilePicture.path == ''
+                      backgroundImage: profilePictureLocal == null &&
+                              profilePictureExternal == ''
                           ? AssetImage('assets/img/blank-profile-picture.png')
-                          : FileImage(profilePicture),
+                          : profilePictureLocal != null
+                              ? FileImage(profilePictureLocal)
+                              : NetworkImage(profilePictureExternal),
                     ),
                     Text(
                       '$salutation \n$username',

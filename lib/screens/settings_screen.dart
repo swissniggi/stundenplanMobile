@@ -27,14 +27,13 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   LocalAuthentication _localAuth = LocalAuthentication();
-  File _profilePic;
+  File _profilePicLocal;
+  String _profilePicExternal;
 
   /// Set a profile phot (or replace it).
   /// [source] the image source, either camera or gallery.
-  /// returns `false` if no photo was chosen.
+  /// returns `false` if no photo was chosen or could not successfully be saved.
   /// returns `true` if the photo was successfully set/changed.
-  /// calls [showErrorDialog()] if an error has occured.
-  // ignore: missing_return
   Future<bool> _setProfilePhoto(ImageSource source) async {
     ImagePicker picker = new ImagePicker();
     final pickedFile = await picker.getImage(source: source);
@@ -51,28 +50,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     var body = new Map<String, dynamic>();
     body["function"] = 'saveProfilePicture';
-    body["username"] =
-        Provider.of<UserProvider>(context, listen: false).username;
-    body["profilePicture"] = savedImage.path;
 
-    Map<String, dynamic> response =
-        await XmlRequestService.createPost(body, context);
+    bool response = await XmlRequestService.createMultipartRequest(
+        body, savedImage.path, context);
 
-    if (response['success'] == true) {
+    if (response == true) {
       setState(() {
-        Provider.of<UserProvider>(context, listen: false).profilePicture =
+        Provider.of<UserProvider>(context, listen: false).profilePictureLocal =
             savedImage;
-        _profilePic = savedImage;
+        _profilePicLocal = savedImage;
       });
 
       return true;
-    } else if (response['sessionTimedOut'] == true) {
-      Provider.of<SecurityProvider>(context, listen: false)
-          .logoutOnTimeOut(context);
-    } else if (response.containsKey('message')) {
-      Provider.of<SecurityProvider>(context, listen: false)
-          .showErrorDialog(context, response['message']);
     }
+
+    return false;
   }
 
   /// Enable authentication with fingerprint.
@@ -217,8 +209,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     bool bioAuthIsEnabled =
         Provider.of<SecurityProvider>(context, listen: false).bioAuthIsEnabled;
 
-    _profilePic =
-        Provider.of<UserProvider>(context, listen: false).user.profilePicture;
+    _profilePicLocal = Provider.of<UserProvider>(context, listen: false)
+        .user
+        .profilePictureLocal;
+    _profilePicExternal = Provider.of<UserProvider>(context, listen: false)
+        .user
+        .profilePictureExternal;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -239,14 +235,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Divider(color: Colors.grey),
             SettingsIconButton(
-              _profilePic.path == ''
+              _profilePicLocal == null && _profilePicExternal == ''
                   ? 'Profilfoto hochladen'
                   : 'Profilfoto ändern',
               Icons.photo,
               () {
                 _onSetPhotoPressed();
               },
-              _profilePic.path != '',
+              _profilePicLocal != null || _profilePicExternal != '',
             ),
             Divider(color: Colors.grey),
           ],

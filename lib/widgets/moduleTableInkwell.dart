@@ -5,20 +5,30 @@ import '../models/pointers.dart';
 import 'tableContainer.dart';
 import 'targetCellList.dart';
 
-class TableInkwell {
+class ModuleTableInkwell {
   /// The given [BuildContext].
   final BuildContext ctx;
 
   /// The data to be display in the [InkWell]s.
   final Map<String, dynamic> tableData;
 
-  /// a [List] of all module colors.
+  /// A [List] of all module colors.
   final List<Color> colors;
+
+  /// The location of the current table.
+  final String location;
+
+  /// The semester of the current table.
+  final String sem;
+
+  /// The year of the current table.
+  final String year;
 
   /// a [List] of [Pointer]s containing the id's of modules.
   final List<Pointer> pointerList;
 
-  TableInkwell(this.ctx, this.tableData, this.colors, this.pointerList);
+  ModuleTableInkwell(this.ctx, this.tableData, this.colors, this.location,
+      this.sem, this.year, this.pointerList);
 
   /// Creates a [List] of [InkWell]s either empty
   /// or containing the data of the designated module.
@@ -28,15 +38,15 @@ class TableInkwell {
     for (var i = 0; i < pointerList.length; i++) {
       bool hasContent = false;
       String module = '';
-      String year = '';
-      String sem = '';
-      String location = '';
+      String year = this.year;
+      String sem = this.sem;
+      String location = this.location;
       int type = 0;
 
       if (tableData.containsKey(pointerList[i].id)) {
         hasContent = true;
         module = tableData[pointerList[i].id]['name'];
-        year = tableData[pointerList[i].id]['year'].toString();
+        // year = tableData[pointerList[i].id]['year'].toString();
         sem = tableData[pointerList[i].id]['sem'];
         location = tableData[pointerList[i].id]['location'];
         type = tableData[pointerList[i].id]['typ'];

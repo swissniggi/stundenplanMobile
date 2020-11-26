@@ -1,9 +1,10 @@
+import 'package:NAWI/screens/examTables_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/timeTable_screen.dart';
+import 'screens/moduleTables_screen.dart';
 import 'screens/dropDowns_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/welcome_screen.dart';
@@ -57,7 +58,8 @@ class MyApp extends StatelessWidget {
           WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
           SettingsScreen.routeName: (ctx) => SettingsScreen(),
           DropDownsScreen.routeName: (ctx) => DropDownsScreen(),
-          TimeTableScreen.routeName: (ctx) => TimeTableScreen(),
+          ModuleTablesScreen.routeName: (ctx) => ModuleTablesScreen(),
+          ExamTablesScreen.routeName: (ctx) => ExamTablesScreen(),
         },
       ),
     );
@@ -97,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// and redirect to welcome page if successfull.
   /// otherwise call [showErrorDialog()].
   /// [withFingerprint] a boolean to determine whether the user
-  /// tries to login using a finger print; default  `false`.
+  /// tries to login using a finger print; default `false`.
   void _loginUser({bool withFingerprint = false}) async {
     setState(() {
       _isLoading = true;
