@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../providers/security_provider.dart';
 import '../models/cells.dart';
-import '../services/xmlRequest_service.dart';
-import 'targetScrollView.dart';
+import 'xmlRequest_service.dart';
+import '../widgets/targetScrollView.dart';
 
-class TargetCellList {
+class TargetCellListService {
   /// Get all possible targets and
   /// call [showModalBottomSheet()] to display them.
   /// [modulName] contains the name of the chosen module.

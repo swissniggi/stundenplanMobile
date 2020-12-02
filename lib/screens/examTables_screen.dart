@@ -1,3 +1,4 @@
+import 'package:NAWI/services/targetExamList_service.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +40,8 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
 
     for (var i = 0; i < semCount; i++) {
       for (var j = 0; j < 2; j++) {
-        Container table =
-            _createTable(exams, locations[j % 2], sems[i % 2], year, semIndex);
+        Container table = _createTable(
+            exams, locations[j % 2], sems[i % 2], year, semIndex, semCount);
         tables.add(table);
       }
 
@@ -66,13 +67,8 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
   /// [year] the year for which the data is displayed.
   /// [semIndex] the index of the semester for which the data is displayed.
   /// returns a [GridView].
-  Container _createTable(
-    Map<String, Map> data,
-    String location,
-    String sem,
-    int year,
-    int semIndex,
-  ) {
+  Container _createTable(Map<String, Map> data, String location, String sem,
+      int year, int semIndex, int semCount) {
     String selectedLocation =
         Provider.of<TableDataProvider>(context, listen: false).selectedLocation;
     Map<String, dynamic> tableData = new Map();
@@ -102,7 +98,17 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
         for (var entry in tableData.entries)
           Container(
             child: InkWell(
-              onLongPress: () {},
+              onLongPress: () {
+                TargetExamListService examService = new TargetExamListService();
+                examService.showTargetExamList(
+                  data,
+                  entry.key,
+                  location,
+                  semIndex,
+                  semCount,
+                  context,
+                );
+              },
               child: TableContainer(
                 entry.key,
                 Colors.black,

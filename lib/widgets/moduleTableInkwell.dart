@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/cells.dart';
 import '../models/pointers.dart';
 import 'tableContainer.dart';
-import 'targetCellList.dart';
+import '../services/targetCellList_service.dart';
 
 class ModuleTableInkwell {
   /// The given [BuildContext].
@@ -60,8 +60,9 @@ class ModuleTableInkwell {
         onLongPress: tableData[pointerList[i].id] == null
             ? () => {}
             : () {
-                TargetCellList dAD = new TargetCellList();
-                dAD.showTargetCells(module, ctx);
+                TargetCellListService possibleTargetList =
+                    new TargetCellListService();
+                possibleTargetList.showTargetCells(module, ctx);
               },
         child: TableContainer(
           module,
