@@ -1,12 +1,12 @@
-import 'package:NAWI/screens/examTables_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
+import 'screens/examTables_screen.dart';
 import 'screens/moduleTables_screen.dart';
 import 'screens/dropDowns_screen.dart';
-import 'screens/register_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/settings_screen.dart';
 import 'providers/webview_provider.dart';
@@ -14,8 +14,8 @@ import 'providers/tabledata_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/security_provider.dart';
 import 'services/xmlRequest_service.dart';
-import 'widgets/customFormField.dart';
-import 'widgets/paddingButton.dart';
+import 'widgets/loginElements.dart';
+import 'widgets/registerElements.dart';
 
 /// Main function.
 void main() {
@@ -54,7 +54,6 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (ctx) => MyHomePage(),
-          RegisterScreen.routeName: (ctx) => RegisterScreen(),
           WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
           SettingsScreen.routeName: (ctx) => SettingsScreen(),
           DropDownsScreen.routeName: (ctx) => DropDownsScreen(),
@@ -72,9 +71,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+  int _index = 0;
   bool _isLoading = false;
+  bool _isLogin = true;
 
   /// Display fingerprint login prompt and.
   /// call [_loginUser()] when successfull.
@@ -100,7 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
   /// otherwise call [showErrorDialog()].
   /// [withFingerprint] a boolean to determine whether the user
   /// tries to login using a finger print; default `false`.
-  void _loginUser({bool withFingerprint = false}) async {
+  void _loginUser(
+      {String username, String password, bool withFingerprint = false}) async {
     setState(() {
       _isLoading = true;
     });
@@ -114,8 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
     body["loginTime"] = securityProvider.loginTime;
 
     if (!withFingerprint) {
-      body["username"] = usernameController.text;
-      body["password"] = passwordController.text;
+      body["username"] = username;
+      body["password"] = password;
     } else {
       body["deviceId"] = securityProvider.deviceId;
     }
@@ -143,14 +143,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  /// Redirect to [RegisterScreen].
-  void _registerUser() {
-    Navigator.of(context).pushReplacementNamed(RegisterScreen.routeName);
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!_isLoading) {
+    if (!_isLoading && _isLogin) {
       _getBioAuthData(context);
     }
 
@@ -172,22 +167,24 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomFormField(
-                    'Benutzername',
-                    usernameController,
+                  ToggleSwitch(
+                    minWidth: 150.0,
+                    minHeight: 60.0,
+                    fontSize: 16.0,
+                    initialLabelIndex: _index,
+                    activeBgColor: Theme.of(context).primaryColor,
+                    activeFgColor: Colors.black,
+                    inactiveBgColor: Colors.grey,
+                    inactiveFgColor: Colors.grey[900],
+                    labels: ['Login', 'Registrieren'],
+                    onToggle: (index) {
+                      setState(() {
+                        _index = index;
+                        _isLogin = !_isLogin;
+                      });
+                    },
                   ),
-                  CustomFormField(
-                    'Passwort',
-                    passwordController,
-                    obscureText: true,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      PaddingButton('Login', _loginUser),
-                      PaddingButton('Registrieren', _registerUser)
-                    ],
-                  ),
+                  _isLogin ? LoginElements(_loginUser) : RegisterElements(),
                 ],
               ),
             ),

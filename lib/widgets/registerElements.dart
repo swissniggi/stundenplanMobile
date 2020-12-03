@@ -3,20 +3,17 @@ import 'package:provider/provider.dart';
 
 import '../providers/security_provider.dart';
 import '../services/xmlRequest_service.dart';
-import '../widgets/customFormField.dart';
-import '../widgets/paddingButton.dart';
-import '../widgets/showDialog.dart';
+import 'customFormField.dart';
+import 'paddingButton.dart';
+import 'showDialog.dart';
 
-/// Returns a [Scaffold] displaying the register screen.
-class RegisterScreen extends StatefulWidget {
-  /// The route name of the screen.
-  static const routeName = '/register';
-
+/// Returns a [Column] displaying the register elements.
+class RegisterElements extends StatefulWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _RegisterElementsState createState() => _RegisterElementsState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterElementsState extends State<RegisterElements> {
   final usernameController = TextEditingController();
   final usermailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -53,38 +50,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Stundenplan FHNW'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomFormField(
+          'Benutzername',
+          usernameController,
+        ),
+        CustomFormField(
+          'Email',
+          usermailController,
+          textInputType: TextInputType.emailAddress,
+        ),
+        CustomFormField(
+          'Passwort',
+          passwordController,
+          obscureText: true,
+        ),
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomFormField(
-              'Benutzername',
-              usernameController,
-            ),
-            CustomFormField(
-              'Email',
-              usermailController,
-              textInputType: TextInputType.emailAddress,
-            ),
-            CustomFormField(
-              'Passwort',
-              passwordController,
-              obscureText: true,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PaddingButton('Registrieren', _registerUser),
-              ],
-            ),
+            PaddingButton('Registrieren', _registerUser),
           ],
         ),
-      ),
+      ],
     );
   }
 }

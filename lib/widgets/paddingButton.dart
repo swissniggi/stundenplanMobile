@@ -15,9 +15,13 @@ class PaddingButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: ButtonTheme(
-        minWidth: 140,
+        minWidth: 210,
+        height: 50,
         child: RaisedButton(
           color: Theme.of(context).primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0),
+          ),
           onPressed: onPressedFunc,
           child: Text(
             buttonText,
