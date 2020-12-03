@@ -219,6 +219,9 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<TableDataProvider>(context, listen: false)
+        .examScreenWasVisited = true;
+
     List<CircularMenuItem> menuItems = [
       CircularMenuItem(
         icon: Icons.save,

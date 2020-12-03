@@ -30,9 +30,9 @@ class _RegisterElementsState extends State<RegisterElements> {
 
     Map<String, dynamic> response =
         await XmlRequestService.createPost(body, context);
-    ShowDialog dialog = new ShowDialog();
 
     if (response['success'] == true) {
+      ShowDialog dialog = new ShowDialog();
       dialog.showCustomDialog(
         'Registrierung erfolgreich',
         () => Navigator.of(context).pushReplacementNamed('/'),

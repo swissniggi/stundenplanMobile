@@ -22,6 +22,8 @@ class TableDataProvider with ChangeNotifier {
   /// A boolean to determine whether the data comes from a saved catalog.
   bool _isCatalog = false;
 
+  bool _examScreenWasVisited = false;
+
   /// Setter for [_tableData] when downloaded from server.
   set newTableData(Map<String, dynamic> data) {
     this._tableData = _processDataFromServer(data);
@@ -53,12 +55,12 @@ class TableDataProvider with ChangeNotifier {
     return duplicates;
   }
 
-  /// Setter for [_selectedLocation]
+  /// Setter for [_selectedLocation].
   set selectedLocation(String location) {
     this._selectedLocation = location;
   }
 
-  /// Getter for [_selectedLocation]
+  /// Getter for [_selectedLocation].
   String get selectedLocation {
     String location = this._selectedLocation;
     return location;
@@ -73,6 +75,16 @@ class TableDataProvider with ChangeNotifier {
   /// Getter for [_isCatalog].
   bool get isCatalog {
     return this._isCatalog;
+  }
+
+  /// Setter for [_examScreenWasVisited].
+  set examScreenWasVisited(bool wasVisited) {
+    this._examScreenWasVisited = wasVisited;
+  }
+
+  /// Getter for for [_examScreenWasVisited].
+  bool get examScreenWasVisited {
+    return this._examScreenWasVisited;
   }
 
   /// Prepares data for saving in the database.

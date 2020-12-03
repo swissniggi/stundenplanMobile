@@ -181,6 +181,9 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<TableDataProvider>(context, listen: false)
+        .examScreenWasVisited = false;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),

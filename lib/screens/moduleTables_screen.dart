@@ -1,3 +1,4 @@
+import 'package:NAWI/widgets/showDialog.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -330,8 +331,22 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
         color: Colors.green,
         iconColor: Colors.white,
         onTap: () {
-          Provider.of<TableDataProvider>(context, listen: false)
-              .saveTableData(_scaffoldKey, context);
+          if (Provider.of<TableDataProvider>(context, listen: false)
+              .examScreenWasVisited) {
+            Provider.of<TableDataProvider>(context, listen: false)
+                .saveTableData(_scaffoldKey, context);
+          } else {
+            ShowDialog dialog = new ShowDialog();
+            dialog.showCustomDialog(
+              'Speichern noch nicht möglich!',
+              () => Navigator.of(context).pop(),
+              context,
+              [
+                Text(
+                    'Bitte schau den Prüfungsplan einmal an, bevor du speicherst.'),
+              ],
+            );
+          }
         },
       ),
       CircularMenuItem(
