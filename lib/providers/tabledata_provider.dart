@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+import 'package:NAWI/services/xmlRequest_service.dart';
+import 'package:NAWI/widgets/customFormField.dart';
+import 'package:NAWI/widgets/paddingButton.dart';
+import 'package:NAWI/widgets/snackbarText.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tableData.dart';
@@ -7,9 +13,10 @@ class TableDataProvider with ChangeNotifier {
   /// A [Map] containing the table data.
   TableData _tableData = new TableData();
 
+  /// A [Map] containing the new proposed semesters of former duplicates.
   Map<String, int> _formerDuplicates = new Map();
 
-  /// the preferred location selected by the user
+  /// the preferred location selected by the user.
   String _selectedLocation;
 
   /// A boolean to determine whether the data comes from a saved catalog.
@@ -51,7 +58,7 @@ class TableDataProvider with ChangeNotifier {
     this._selectedLocation = location;
   }
 
-  /// Getter fpr [_selectedLocation]
+  /// Getter for [_selectedLocation]
   String get selectedLocation {
     String location = this._selectedLocation;
     return location;
@@ -66,6 +73,52 @@ class TableDataProvider with ChangeNotifier {
   /// Getter for [_isCatalog].
   bool get isCatalog {
     return this._isCatalog;
+  }
+
+  /// Prepares data for saving in the database.
+  /// returns a [Map] containing the prepared data.
+  Map<String, dynamic> _prepareExamDataForSaving() {
+    Map<String, Map<String, dynamic>> preparedData = new Map();
+
+    for (var zeile in _tableData.exams["0"]) {
+      if (preparedData.containsKey(zeile.pruefung)) {
+        if (zeile.vorschlag > preparedData[zeile.pruefung]['Semester']) {
+          preparedData[zeile.pruefung]['Semester'] = zeile.vorschlag;
+        }
+      } else {
+        Map<String, dynamic> singleRow = new Map();
+        singleRow['Prüfung'] = zeile.pruefung;
+        singleRow['Semester'] = zeile.vorschlag;
+        singleRow['Ort'] = _selectedLocation;
+
+        preparedData[zeile.pruefung] = singleRow;
+      }
+    }
+
+    return preparedData;
+  }
+
+  /// Prepares data for saving in the database.
+  /// returns a [Map] containing the prepared data.
+  Map<String, dynamic> _prepareModuleDataForSaving() {
+    Map<String, dynamic> preparedData = new Map();
+    int baseIndex = 0;
+
+    for (var zeile in _tableData.modules["0"]) {
+      Map<String, dynamic> singleRow = new Map();
+      singleRow['Veranstaltung'] = zeile.veranstaltung;
+      singleRow['Jahr'] = zeile.jahr;
+      singleRow['Sem'] = zeile.semester;
+      singleRow['Vorschlag'] = zeile.vorschlag;
+      singleRow['Wochentag'] = zeile.wochentag;
+      singleRow['Beginn'] = zeile.beginn;
+      singleRow['Ort'] = zeile.ort;
+
+      preparedData[baseIndex.toString()] = singleRow;
+      baseIndex++;
+    }
+
+    return preparedData;
   }
 
   /// Process the data delivered from the server.
@@ -118,6 +171,67 @@ class TableDataProvider with ChangeNotifier {
     }
 
     return processedData;
+  }
+
+  void saveTableData(GlobalKey<ScaffoldState> scaffoldKey, BuildContext ctx) {
+    TextEditingController catalogNameController = new TextEditingController();
+
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      builder: (_) {
+        return SingleChildScrollView(
+          child: Card(
+            child: Container(
+              padding: MediaQuery.of(ctx).viewInsets,
+              child: Column(
+                children: [
+                  CustomFormField(
+                    'Katalogbezeichnung',
+                    catalogNameController,
+                  ),
+                  PaddingButton(
+                    'Speichern',
+                    () async {
+                      if (catalogNameController.text != '') {
+                        var body = new Map<String, dynamic>();
+                        body["function"] = 'setModulesOfUser';
+                        body["data"] =
+                            json.encode(_prepareModuleDataForSaving());
+                        body["footerData"] =
+                            json.encode(_prepareExamDataForSaving());
+                        body["previsitedModules"] = json.encode(new Map());
+                        body["previsitedExams"] = json.encode(new Map());
+                        body["location"] = _selectedLocation;
+                        body["catalogName"] = catalogNameController.text;
+
+                        Map<String, dynamic> response =
+                            await XmlRequestService.createPost(body, ctx);
+
+                        String snackBarText;
+
+                        if (response['success'] == true) {
+                          snackBarText = 'Erfolgreich gespeichert!';
+                        } else {
+                          snackBarText = 'Speichern fehlgeschlagen.';
+                        }
+
+                        final snackBar = SnackBar(
+                          content: SnackbarText(snackBarText, Colors.green),
+                        );
+                        scaffoldKey.currentState.showSnackBar(snackBar);
+
+                        Navigator.of(ctx).pop();
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   /// Reset all properties of this class.

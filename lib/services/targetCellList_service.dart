@@ -37,11 +37,7 @@ class TargetCellListService {
       showModalBottomSheet(
         context: ctx,
         builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            child: TargetScrollView(response),
-            behavior: HitTestBehavior.opaque,
-          );
+          return TargetScrollView(response);
         },
       );
     }

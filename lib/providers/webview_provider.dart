@@ -1,3 +1,4 @@
+import 'package:NAWI/widgets/welcomeWebView.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +10,7 @@ import '../widgets/welcomeCarouselItem.dart';
 /// A provider for the webvies of the [WelcomeScreen].
 class WebViewProvider with ChangeNotifier {
   /// A [List] of the websites the user has added.
-  List<String> _addedUrls = new List();
+  List<String> _addedUrls = ['www.fhnw.ch'];
 
   /// A [List] of [WelcomeCarouselItem]s each containing a [WelcomeWebView].
   List<WelcomeCarouselItem> _addedSites = new List();

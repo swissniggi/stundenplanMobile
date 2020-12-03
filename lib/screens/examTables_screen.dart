@@ -20,6 +20,8 @@ class ExamTablesScreen extends StatefulWidget {
 }
 
 class _ExamTablesScreenState extends State<ExamTablesScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   /// Configure the tables to be displayed.
   /// returns a [ListView].
   ListView _configureTables() {
@@ -29,7 +31,7 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
     int semCount = _getSemCount(fullData, false);
     List<String> sems = ['HS', 'FS'];
     List<String> locations = ['Muttenz', 'Windisch'];
-    int year = new DateTime.now().year;
+    int year = new DateTime.now().year; // FIXME: fix that for catalogs
     int semIndex = 1;
 
     if (semCount % 2 != 0) {
@@ -116,8 +118,6 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
               ),
             ),
           ),
-        /*if (freeExamSpaces > 0 && freeExamSpaces < 6)
-          for (var i = 0; i < freeExamSpaces; i++) Container()*/
       ],
     );
 
@@ -166,6 +166,7 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
   }
 
   /// Process the data of the exams.
+  /// [fullData] contains all data for exams and modules.
   /// returns a [Map].
   Map<String, Map> _processFooterData(TableData fullData) {
     var pruefung = '';
@@ -216,8 +217,6 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
     return pruefungen;
   }
 
-  void _saveTimeTables() {}
-
   @override
   Widget build(BuildContext context) {
     List<CircularMenuItem> menuItems = [
@@ -225,7 +224,10 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
         icon: Icons.save,
         color: Colors.green,
         iconColor: Colors.white,
-        onTap: _saveTimeTables,
+        onTap: () {
+          Provider.of<TableDataProvider>(context, listen: false)
+              .saveTableData(_scaffoldKey, context);
+        },
       ),
       CircularMenuItem(
         icon: Icons.arrow_back,
@@ -244,6 +246,7 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
     ];
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Prüfungsplan FHNW'),
       ),

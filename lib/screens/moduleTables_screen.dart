@@ -22,6 +22,7 @@ class ModuleTablesScreen extends StatefulWidget {
 }
 
 class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Map<String, Map> _processedData;
   bool _anyDoublesAtAll = false;
 
@@ -321,8 +322,6 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
         .manipulatedTableData = fullData;
   }
 
-  void _saveTimeTables() {}
-
   @override
   Widget build(BuildContext context) {
     List<CircularMenuItem> menuItems = [
@@ -330,7 +329,10 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
         icon: Icons.save,
         color: Colors.green,
         iconColor: Colors.white,
-        onTap: _saveTimeTables,
+        onTap: () {
+          Provider.of<TableDataProvider>(context, listen: false)
+              .saveTableData(_scaffoldKey, context);
+        },
       ),
       CircularMenuItem(
         icon: Icons.arrow_forward,
@@ -349,6 +351,7 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
     ];
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),
       ),

@@ -1,9 +1,18 @@
-import 'package:NAWI/models/tableData.dart';
-import 'package:NAWI/providers/tabledata_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/tabledata_provider.dart';
+import '../models/tableData.dart';
+
 class TargetExamListService {
+  /// Get all possible targets and
+  /// call [showModalBottomSheet()] to display them.
+  /// [data] contains the processed exam data.
+  /// [examName] the name of the selected exam.
+  /// [location] the location where the exam takes place.
+  /// [semIndex] the index of the semester where the exam takes place.
+  /// [semCount] the number of available semesters.
+  /// [ctx] the build context.
   void showTargetExamList(
     Map<String, Map> data,
     String examName,
@@ -51,15 +60,14 @@ class TargetExamListService {
     showModalBottomSheet(
       context: ctx,
       builder: (_) {
-        return GestureDetector(
-          onTap: () {},
-          child: SingleChildScrollView(
-            child: Card(
-              child: Container(
-                child: Column(
-                  children: targetTexts.isNotEmpty
-                      ? [
-                          ...targetTexts.entries.map((targetValues) {
+        return SingleChildScrollView(
+          child: Card(
+            child: Container(
+              child: Column(
+                children: targetTexts.isNotEmpty
+                    ? [
+                        ...targetTexts.entries.map(
+                          (targetValues) {
                             index++;
                             return Column(
                               children: [
@@ -76,7 +84,10 @@ class TargetExamListService {
                                       ),
                                       onPressed: () {
                                         moveExam(
-                                            examName, targetValues.value, ctx);
+                                          examName,
+                                          targetValues.value,
+                                          ctx,
+                                        );
                                       },
                                     ),
                                   ),
@@ -85,30 +96,34 @@ class TargetExamListService {
                                   Divider(color: Colors.grey)
                               ],
                             );
-                          })
-                        ]
-                      : [
-                          Center(
-                            child: Container(
-                              height: 60,
-                              child: Text(
-                                'Keine Verschiebungsmöglichkeit gefunden',
-                                style: TextStyle(fontSize: 20),
-                              ),
+                          },
+                        )
+                      ]
+                    : [
+                        Center(
+                          child: Container(
+                            height: 60,
+                            child: Text(
+                              'Keine Verschiebungsmöglichkeit gefunden',
+                              style: TextStyle(fontSize: 20),
                             ),
                           ),
-                        ],
-                ),
+                        ),
+                      ],
               ),
             ),
           ),
-          behavior: HitTestBehavior.opaque,
         );
       },
     );
   }
 
-  moveExam(String examName, int semester, BuildContext ctx) {
+  /// Move exam to selected semester.
+  /// [examName] the name of the exam to be moved.
+  /// [semester] the semester where the exam is to be moved to.
+  /// [ctx] the building context.
+  /// closes the [modalBottomSheet]
+  void moveExam(String examName, int semester, BuildContext ctx) {
     TableData fullData =
         Provider.of<TableDataProvider>(ctx, listen: false).tableData;
 
