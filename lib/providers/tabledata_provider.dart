@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:NAWI/services/xmlRequest_service.dart';
-import 'package:NAWI/widgets/customFormField.dart';
-import 'package:NAWI/widgets/paddingButton.dart';
-import 'package:NAWI/widgets/snackbarText.dart';
 import 'package:flutter/material.dart';
 
+import '../services/xmlRequest_service.dart';
 import '../models/tableData.dart';
+import '../widgets/customFormField.dart';
+import '../widgets/paddingButton.dart';
+import '../widgets/snackbarText.dart';
 
 /// A provider for the table data.
 class TableDataProvider with ChangeNotifier {

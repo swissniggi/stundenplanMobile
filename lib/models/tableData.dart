@@ -24,4 +24,5 @@ class ExamData {
   int vorschlag;
   String kuerzel;
   int kreditpunkte;
+  String ort;
 }
