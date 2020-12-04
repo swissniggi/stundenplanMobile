@@ -326,27 +326,10 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
   Widget build(BuildContext context) {
     List<CircularMenuItem> menuItems = [
       CircularMenuItem(
-        icon: Icons.save,
-        color: Colors.green,
+        icon: Icons.poll,
+        color: Colors.blue,
         iconColor: Colors.white,
-        onTap: () {
-          if (Provider.of<TableDataProvider>(context, listen: false)
-              .examScreenWasVisited) {
-            Provider.of<TableDataProvider>(context, listen: false)
-                .saveTableData(_scaffoldKey, context);
-          } else {
-            ShowDialog dialog = new ShowDialog();
-            dialog.showCustomDialog(
-              'Speichern noch nicht möglich!',
-              () => Navigator.of(context).pop(),
-              context,
-              [
-                Text(
-                    'Bitte schau den Prüfungsplan einmal an, bevor du speicherst.'),
-              ],
-            );
-          }
-        },
+        onTap: () {},
       ),
       CircularMenuItem(
         icon: Icons.arrow_forward,
@@ -355,12 +338,6 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
         onTap: () {
           Navigator.of(context).pushNamed(ExamTablesScreen.routeName);
         },
-      ),
-      CircularMenuItem(
-        icon: Icons.poll,
-        color: Colors.blue,
-        iconColor: Colors.white,
-        onTap: () {},
       ),
     ];
 

@@ -224,15 +224,6 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
 
     List<CircularMenuItem> menuItems = [
       CircularMenuItem(
-        icon: Icons.save,
-        color: Colors.green,
-        iconColor: Colors.white,
-        onTap: () {
-          Provider.of<TableDataProvider>(context, listen: false)
-              .saveTableData(_scaffoldKey, context);
-        },
-      ),
-      CircularMenuItem(
         icon: Icons.arrow_back,
         color: Colors.cyan,
         iconColor: Colors.white,
@@ -245,6 +236,15 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
         color: Colors.blue,
         iconColor: Colors.white,
         onTap: () {},
+      ),
+      CircularMenuItem(
+        icon: Icons.save,
+        color: Colors.green,
+        iconColor: Colors.white,
+        onTap: () {
+          Provider.of<TableDataProvider>(context, listen: false)
+              .saveTableData(_scaffoldKey, context);
+        },
       ),
     ];
 
