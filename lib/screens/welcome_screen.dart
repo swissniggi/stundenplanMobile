@@ -114,7 +114,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     CircleAvatar(
                       radius: 40,
                       backgroundImage: profilePictureLocal == null &&
-                              profilePictureExternal == ''
+                              profilePictureExternal == null
                           ? AssetImage('assets/img/blank-profile-picture.png')
                           : profilePictureLocal != null
                               ? FileImage(profilePictureLocal)
