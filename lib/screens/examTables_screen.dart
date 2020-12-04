@@ -1,4 +1,3 @@
-import 'package:NAWI/services/targetExamList_service.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'moduleTables_screen.dart';
 import 'dropDowns_screen.dart';
 import '../providers/tabledata_provider.dart';
+import '../services/targetExamList_service.dart';
 import '../models/tableData.dart';
 import '../widgets/nawiDrawer.dart';
 import '../widgets/circularTableMenu.dart';

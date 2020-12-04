@@ -14,8 +14,8 @@ import 'providers/tabledata_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/security_provider.dart';
 import 'services/xmlRequest_service.dart';
-import 'widgets/loginElements.dart';
-import 'widgets/registerElements.dart';
+import 'widgets/loginView.dart';
+import 'widgets/registerView.dart';
 
 /// Main function.
 void main() {

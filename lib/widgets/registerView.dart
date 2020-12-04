@@ -29,7 +29,7 @@ class _RegisterElementsState extends State<RegisterElements> {
     body["password"] = passwordController.text;
 
     Map<String, dynamic> response =
-        await XmlRequestService.createPost(body, context);
+        await XmlRequestService.createPost(body, context, withToken: false);
 
     if (response['success'] == true) {
       ShowDialog dialog = new ShowDialog();
