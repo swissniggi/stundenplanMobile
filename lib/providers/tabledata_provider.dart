@@ -16,13 +16,17 @@ class TableDataProvider with ChangeNotifier {
   /// A [Map] containing the new proposed semesters of former duplicates.
   Map<String, int> _formerDuplicates = new Map();
 
+  /// A [Map] containing the number of exams per semester by location.
+  Map<String, Map<int, int>> _examsPerSemester = new Map();
+
+  /// The processed exam of the current schedule.
+  ExamsProcessed _processedExams = new ExamsProcessed();
+
   /// the preferred location selected by the user.
   String _selectedLocation;
 
   /// A boolean to determine whether the data comes from a saved catalog.
   bool _isCatalog = false;
-
-  bool _examScreenWasVisited = false;
 
   /// Setter for [_tableData] when downloaded from server.
   set newTableData(Map<String, dynamic> data) {
@@ -42,7 +46,7 @@ class TableDataProvider with ChangeNotifier {
     return currentTableData;
   }
 
-  /// Daten eines vormalig überlappenden Moduls speichern oder aktualisieren.
+  /// Updater for [_formerDuplicates].
   void setFormerDuplicates(String moduleName, int newProp) {
     this
         ._formerDuplicates
@@ -53,6 +57,29 @@ class TableDataProvider with ChangeNotifier {
   Map<String, int> get formerDuplicates {
     Map<String, int> duplicates = this._formerDuplicates;
     return duplicates;
+  }
+
+  /// Setter for [_examsPerSemester].
+  set setExamsPerSemester(Map<String, Map<int, int>> examsPerSemester) {
+    this._examsPerSemester = examsPerSemester;
+  }
+
+  /// Getter for [_examsPerSemester].
+  Map<String, Map<int, int>> get examsPerSemester {
+    Map<String, Map<int, int>> examsPerSemester = this._examsPerSemester;
+    return examsPerSemester;
+  }
+
+  /// Setter for [_processedExams].
+  set processedExams(ExamsProcessed processedExams) {
+    this._processedExams = processedExams;
+    notifyListeners();
+  }
+
+  /// Getter for [_processedExams].
+  ExamsProcessed get processedExams {
+    ExamsProcessed processedExams = _processedExams;
+    return processedExams;
   }
 
   /// Setter for [_selectedLocation].
@@ -77,16 +104,6 @@ class TableDataProvider with ChangeNotifier {
     return this._isCatalog;
   }
 
-  /// Setter for [_examScreenWasVisited].
-  set examScreenWasVisited(bool wasVisited) {
-    this._examScreenWasVisited = wasVisited;
-  }
-
-  /// Getter for for [_examScreenWasVisited].
-  bool get examScreenWasVisited {
-    return this._examScreenWasVisited;
-  }
-
   /// Prepares data for saving in the database.
   /// returns a [Map] containing the prepared data.
   Map<String, dynamic> _prepareExamDataForSaving() {
@@ -101,7 +118,7 @@ class TableDataProvider with ChangeNotifier {
         Map<String, dynamic> singleRow = new Map();
         singleRow['Prüfung'] = zeile.pruefung;
         singleRow['Semester'] = zeile.vorschlag;
-        singleRow['Ort'] = _selectedLocation;
+        singleRow['Ort'] = _isCatalog ? zeile.ort : _selectedLocation;
 
         preparedData[zeile.pruefung] = singleRow;
       }
@@ -246,9 +263,53 @@ class TableDataProvider with ChangeNotifier {
     );
   }
 
+  /// Process the data of the exams.
+  /// [fullData] contains all data for exams and modules.
+  /// [ctx] the given BuildContext.
+  void processFooterData(BuildContext ctx) {
+    TableData fullData = this.tableData;
+    String selectedLocation = this.selectedLocation;
+    Map<String, int> duplicates = this.formerDuplicates;
+    ExamsProcessed pruefungen = new ExamsProcessed();
+    pruefungen.exams = new Map();
+
+    for (var zeile in fullData.exams["0"]) {
+      if (pruefungen.exams.containsKey(zeile.pruefung)) {
+        if (zeile.vorschlag > pruefungen.exams[zeile.pruefung].vorschlag) {
+          pruefungen.exams[zeile.pruefung].vorschlag = zeile.vorschlag;
+        }
+        pruefungen.exams[zeile.pruefung].veranstaltungen
+            .add(zeile.veranstaltung);
+      } else {
+        ExamProcessed newExam = new ExamProcessed();
+        newExam.pruefung = zeile.pruefung;
+        newExam.veranstaltungen = [zeile.veranstaltung];
+        newExam.vorschlag = zeile.vorschlag;
+        newExam.ort = zeile.ort == null ? selectedLocation : zeile.ort;
+        pruefungen.exams.addAll({zeile.pruefung: newExam});
+      }
+
+      /* Since an exam (normaly) depends on more than one module this
+        loop has to be executed each time.
+        Down here an exams-Object for the given exam ALWAYS exists. */
+      duplicates.forEach((veranstaltung, vorschlag) {
+        if (veranstaltung == zeile.veranstaltung &&
+            vorschlag > pruefungen.exams[zeile.pruefung].vorschlag) {
+          pruefungen.exams[zeile.pruefung].vorschlag = vorschlag;
+        }
+      });
+    }
+
+    this.processedExams = pruefungen;
+  }
+
   /// Reset all properties of this class.
   void reset() {
     _tableData = new TableData();
+    _formerDuplicates = new Map<String, int>();
+    _examsPerSemester = new Map<String, Map<int, int>>();
+    _processedExams = new ExamsProcessed();
+    _selectedLocation = '';
     _isCatalog = false;
   }
 }

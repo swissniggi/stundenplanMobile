@@ -25,13 +25,17 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
   /// Configure the tables to be displayed.
   /// returns a [ListView].
   ListView _configureTables() {
-    TableData fullData = Provider.of<TableDataProvider>(context).tableData;
-    Map<String, Map> exams = _processFooterData(fullData);
+    TableDataProvider tableDataProvider =
+        Provider.of<TableDataProvider>(context, listen: false);
+    TableData fullData = tableDataProvider.tableData;
+    bool isCatalog = tableDataProvider.isCatalog;
+    ExamsProcessed exams =
+        Provider.of<TableDataProvider>(context).processedExams;
 
     int semCount = _getSemCount(fullData, false);
     List<String> sems = ['HS', 'FS'];
     List<String> locations = ['Muttenz', 'Windisch'];
-    int year = new DateTime.now().year; // FIXME: fix that for catalogs
+    int year = isCatalog ? _findMinYear(fullData) : new DateTime.now().year;
     int semIndex = 1;
 
     if (semCount % 2 != 0) {
@@ -42,8 +46,8 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
 
     for (var i = 0; i < semCount; i++) {
       for (var j = 0; j < 2; j++) {
-        Container table = _createTable(
-            exams, locations[j % 2], sems[i % 2], year, semIndex, semCount);
+        Container table = _createTable(exams, locations[j % 2], sems[i % 2],
+            year, semIndex, semCount, isCatalog);
         tables.add(table);
       }
 
@@ -63,32 +67,45 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
   }
 
   /// Create a new table.
-  /// [data] the data to fill the table with.
+  /// [examData] the data to fill the table with.
   /// [location] the location for which the data is displayed.
   /// [sem] the sem for which the data is displayed.
   /// [year] the year for which the data is displayed.
   /// [semIndex] the index of the semester for which the data is displayed.
   /// returns a [GridView].
-  Container _createTable(Map<String, Map> data, String location, String sem,
-      int year, int semIndex, int semCount) {
-    String selectedLocation =
-        Provider.of<TableDataProvider>(context, listen: false).selectedLocation;
+  Container _createTable(ExamsProcessed examData, String location, String sem,
+      int year, int semIndex, int semCount, bool isCatalog) {
     Map<String, dynamic> tableData = new Map();
     int freeExamSpaces = 6;
+    Map<String, Map<int, int>> examsInSemester =
+        Provider.of<TableDataProvider>(context, listen: false).examsPerSemester;
 
-    data.forEach((key, value) {
-      if (location == selectedLocation) {
-        if (data[key]["Vorschlag"] == semIndex) {
-          if (freeExamSpaces > 0) {
-            var exam = data[key]['Prüfung'];
-            tableData[exam] = value;
-            freeExamSpaces--;
-          } else if (freeExamSpaces == 0) {
-            data[key]["Vorschlag"] += 2;
-          }
+    examData.exams.forEach((key, value) {
+      int prop = examData.exams[key].movedTo > 0
+          ? examData.exams[key].movedTo
+          : examData.exams[key].vorschlag;
+
+      if (location == examData.exams[key].ort && prop == semIndex) {
+        if (freeExamSpaces > 0) {
+          var exam = examData.exams[key].pruefung;
+          tableData[exam] = value;
+          freeExamSpaces--;
+        } else if (freeExamSpaces == 0) {
+          examData.exams[key].vorschlag += 2;
         }
       }
     });
+
+    Map<int, int> examsInThisSemester = {semIndex: 6 - freeExamSpaces};
+
+    if (examsInSemester.containsKey(location)) {
+      examsInSemester[location].addAll(examsInThisSemester);
+    } else {
+      examsInSemester.addAll({location: examsInThisSemester});
+    }
+
+    Provider.of<TableDataProvider>(context, listen: false).setExamsPerSemester =
+        examsInSemester;
 
     GridView table = new GridView.count(
       primary: false,
@@ -103,11 +120,10 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
               onLongPress: () {
                 TargetExamListService examService = new TargetExamListService();
                 examService.showTargetExamList(
-                  data,
                   entry.key,
-                  location,
                   semIndex,
                   semCount,
+                  isCatalog,
                   context,
                 );
               },
@@ -139,6 +155,21 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
     return tableContainer;
   }
 
+  /// Get the lowest year from the table data
+  /// [allData] the data for all modules of the user.
+  /// returns an [int]
+  int _findMinYear(TableData allData) {
+    int minYear = new DateTime.now().year;
+
+    for (var zeile in allData.modules["0"]) {
+      if (zeile.jahr < minYear) {
+        minYear = zeile.jahr;
+      }
+    }
+
+    return minYear;
+  }
+
   /// Determine how many semesters must be displayed.
   /// [data] the data for all modules of the chosen topics.
   /// [isCatalog] a boolean to determine whether the data comes from a saved catalog.
@@ -165,63 +196,8 @@ class _ExamTablesScreenState extends State<ExamTablesScreen> {
     return semCount >= maxSem ? semCount : maxSem;
   }
 
-  /// Process the data of the exams.
-  /// [fullData] contains all data for exams and modules.
-  /// returns a [Map].
-  Map<String, Map> _processFooterData(TableData fullData) {
-    var pruefung = '';
-    var vorschlag = 0;
-    Map<String, Map> pruefungen = {};
-    var veranstaltungen = {};
-    for (var zeile in fullData.exams["0"]) {
-      Map<String, int> duplicates =
-          Provider.of<TableDataProvider>(context, listen: false)
-              .formerDuplicates;
-
-      // set Vorschlag to changed value if available
-      if (duplicates.containsKey(zeile.veranstaltung)) {
-        vorschlag = duplicates[zeile.veranstaltung];
-      }
-
-      var exam = {};
-      if (pruefung == zeile.pruefung) {
-        veranstaltungen[zeile.veranstaltung] = zeile;
-        if (zeile.vorschlag > vorschlag) {
-          vorschlag = zeile.vorschlag;
-        }
-      } else if (pruefung == '') {
-        vorschlag = zeile.vorschlag;
-        pruefung = zeile.pruefung;
-        veranstaltungen = {};
-        veranstaltungen[zeile.veranstaltung] = zeile;
-      } else {
-        exam["Prüfung"] = pruefung;
-        exam["Veranstaltungen"] = veranstaltungen;
-        exam["Vorschlag"] = vorschlag;
-        pruefungen[pruefung] = exam;
-        pruefung = zeile.pruefung;
-        vorschlag = zeile.vorschlag;
-        veranstaltungen = {};
-        veranstaltungen[zeile.veranstaltung] = zeile;
-      }
-    }
-    // Letzte Prüfung ebenfalls übergeben
-    if (pruefung != '') {
-      var lastExam = {};
-      lastExam["Prüfung"] = pruefung;
-      lastExam["Veranstaltungen"] = veranstaltungen;
-      lastExam["Vorschlag"] = vorschlag;
-      pruefungen[pruefung] = lastExam;
-    }
-
-    return pruefungen;
-  }
-
   @override
   Widget build(BuildContext context) {
-    Provider.of<TableDataProvider>(context, listen: false)
-        .examScreenWasVisited = true;
-
     List<CircularMenuItem> menuItems = [
       CircularMenuItem(
         icon: Icons.arrow_back,

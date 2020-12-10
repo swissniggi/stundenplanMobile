@@ -32,6 +32,8 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
       if (_anyDoublesAtAll) {
         _updateRootData(_processedData);
       }
+      Provider.of<TableDataProvider>(context, listen: false)
+          .processFooterData(context);
     });
     super.initState();
   }
@@ -39,13 +41,15 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
   /// Configure the tables to be displayed.
   /// returns a [GridView].
   GridView _configureTables() {
+    bool isCatalog =
+        Provider.of<TableDataProvider>(context, listen: false).isCatalog;
     Map<String, Map> allData = _updateTable();
 
     int semCount = _getSemCount(allData, false);
     List<String> sems = ['HS', 'FS'];
     List<int> semIndices = [1, 1];
     List<String> locations = ['Muttenz', 'Windisch'];
-    int year = new DateTime.now().year;
+    int year = isCatalog ? _findMinYear(allData) : new DateTime.now().year;
 
     if (semCount % 2 != 0) {
       semCount++;
@@ -196,6 +200,21 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
     return table;
   }
 
+  /// Get the lowest year from the table data
+  /// [allData] the data for all modules of the user.
+  /// returns an [int]
+  int _findMinYear(Map<String, Map> allData) {
+    int minYear = new DateTime.now().year;
+
+    allData.forEach((key, value) {
+      if (allData[key]["year"] < minYear) {
+        minYear = allData[key]["year"];
+      }
+    });
+
+    return minYear;
+  }
+
   /// Determine how many semesters must be displayed.
   /// [data] the data for all modules of the chosen topics.
   /// [isCatalog] a boolean to determine whether the data comes from a saved catalog.
@@ -228,7 +247,7 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
   Map<String, Map> _updateTable() {
     TableData fullData = Provider.of<TableDataProvider>(context).tableData;
 
-    Map<String, Map> allData = {};
+    Map<String, Map> allModuleData = {};
     for (var zeile in fullData.modules["0"]) {
       var fach = zeile.fach;
       var year = zeile.jahr;
@@ -251,40 +270,44 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
         "prop": prop,
         "location": location
       };
-      allData[data["name"]] = data;
+      allModuleData[data["name"]] = data;
     }
-    return _resolveOverlappingModules(allData);
+    return _resolveOverlappingModules(allModuleData);
   }
 
   /// Find overlapping modules and move one to resolve the problem.
-  /// [data] the processed module data.
+  /// [moduleData] the processed module data.
   /// returns a [Map].
-  Map<String, Map> _resolveOverlappingModules(Map<String, Map> data) {
+  Map<String, Map> _resolveOverlappingModules(Map<String, Map> moduleData) {
+    Map<String, int> existingDoubles =
+        Provider.of<TableDataProvider>(context, listen: false).formerDuplicates;
     bool hasDoubles = false;
-    bool noMoreDoubles = false;
+    bool noMoreDoubles = existingDoubles.isNotEmpty;
 
     while (!noMoreDoubles) {
       hasDoubles = false;
-      for (var key in data.keys) {
-        for (var key2 in data.keys) {
-          if (data[key] != data[key2] &&
-              data[key]["location"] == data[key2]["location"] &&
-              data[key]["year"] == data[key2]["year"] &&
-              data[key]["sem"] == data[key2]["sem"] &&
-              data[key]["day"] == data[key2]["day"] &&
-              data[key]["timeBegin"] == data[key2]["timeBegin"]) {
+      for (var key in moduleData.keys) {
+        for (var key2 in moduleData.keys) {
+          if (moduleData[key] != moduleData[key2] &&
+              moduleData[key]["location"] == moduleData[key2]["location"] &&
+              moduleData[key]["year"] == moduleData[key2]["year"] &&
+              moduleData[key]["sem"] == moduleData[key2]["sem"] &&
+              moduleData[key]["day"] == moduleData[key2]["day"] &&
+              moduleData[key]["timeBegin"] == moduleData[key2]["timeBegin"]) {
             _anyDoublesAtAll = true;
             hasDoubles = true;
-            if (data[key2]["name"] != 'privater Termin') {
-              data[key2]["year"] += 1;
-              data[key2]["prop"] += 2;
+            if (moduleData[key2]["name"] != 'privater Termin') {
+              moduleData[key2]["year"] += 1;
+              moduleData[key2]["prop"] += 2;
               Provider.of<TableDataProvider>(context, listen: false)
-                  .setFormerDuplicates(data[key2]["name"], data[key2]["prop"]);
+                  .setFormerDuplicates(
+                      moduleData[key2]["name"], moduleData[key2]["prop"]);
             } else {
-              data[key]["year"] += 1;
-              data[key]["prop"] += 2;
+              moduleData[key]["year"] += 1;
+              moduleData[key]["prop"] += 2;
               Provider.of<TableDataProvider>(context, listen: false)
-                  .setFormerDuplicates(data[key]["name"], data[key]["prop"]);
+                  .setFormerDuplicates(
+                      moduleData[key]["name"], moduleData[key]["prop"]);
             }
             break;
           }
@@ -296,9 +319,9 @@ class _ModuleTablesScreenState extends State<ModuleTablesScreen> {
       }
     }
 
-    _processedData = data;
+    _processedData = moduleData;
 
-    return data;
+    return moduleData;
   }
 
   /// Update the root data of the provider.

@@ -1,3 +1,4 @@
+import 'package:NAWI/screens/examTables_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -143,12 +144,15 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
           await XmlRequestService.createPost(body, context);
 
       if (response['success']) {
-        Provider.of<TableDataProvider>(context, listen: false).newTableData =
-            response;
-        Provider.of<TableDataProvider>(context, listen: false)
-            .selectedLocation = _locations[_groupValue];
-        Provider.of<TableDataProvider>(context, listen: false).isCatalog =
-            isCatalog;
+        TableDataProvider tableDataProvider =
+            Provider.of<TableDataProvider>(context, listen: false);
+        tableDataProvider.reset();
+        tableDataProvider.newTableData = response;
+        tableDataProvider.isCatalog = isCatalog;
+
+        if (!isCatalog) {
+          tableDataProvider.selectedLocation = _locations[_groupValue];
+        }
 
         Navigator.of(context)
             .pushReplacementNamed(ModuleTablesScreen.routeName);
@@ -181,9 +185,6 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<TableDataProvider>(context, listen: false)
-        .examScreenWasVisited = false;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Stundenplan FHNW'),

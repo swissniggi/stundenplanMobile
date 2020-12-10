@@ -12,47 +12,53 @@ class TargetExamListService {
   /// [location] the location where the exam takes place.
   /// [semIndex] the index of the semester where the exam takes place.
   /// [semCount] the number of available semesters.
+  /// [isCatalog] `true` if the data is taken from a saved schedule
+  /// else `false`.
   /// [ctx] the build context.
   void showTargetExamList(
-    Map<String, Map> data,
     String examName,
-    String location,
     int semIndex,
     int semCount,
+    bool isCatalog,
     BuildContext ctx,
   ) {
+    TableDataProvider tableDataProvider =
+        Provider.of<TableDataProvider>(ctx, listen: false);
     List<String> sems = ['FS', 'HS'];
-    int year = new DateTime.now().year; // TODO: fix this for catalogs!
-    Map<int, int> examsPerSem = new Map();
-    List<int> possibleTargetSemesters = new List();
+    TableData fullData = tableDataProvider.tableData;
+    ExamsProcessed processedExams = tableDataProvider.processedExams;
+    Map<String, Map<int, int>> examsPerSemester =
+        tableDataProvider.examsPerSemester;
+    int minYear = isCatalog ? _findMinYear(fullData) : new DateTime.now().year;
+    Map<String, List<int>> possibleTargetSemesters = new Map();
 
-    for (int i = 1; i <= semCount; i++) {
-      if (i > semIndex) {
-        examsPerSem[i] = 0;
-      }
-    }
-
-    data.forEach((key, value) {
-      int prop = data[key]["Vorschlag"];
-      if (prop > semIndex) {
-        examsPerSem[prop]++;
-      }
+    examsPerSemester.forEach((location, value) {
+      value.forEach((semester, value) {
+        if (value < 6 &&
+            (semester > processedExams.exams[examName].vorschlag ||
+                (semester == processedExams.exams[examName].vorschlag &&
+                    location != processedExams.exams[examName].ort))) {
+          if (possibleTargetSemesters.containsKey(location)) {
+            possibleTargetSemesters[location].add(semester);
+          } else {
+            possibleTargetSemesters.addAll({
+              location: [semester]
+            });
+          }
+        }
+      });
     });
 
-    examsPerSem.forEach((key, value) {
-      if (value < 6) {
-        possibleTargetSemesters.add(key);
-      }
-    });
+    Map<String, Map<String, int>> targetTexts = new Map();
+    possibleTargetSemesters.forEach((location, sem) {
+      sem.forEach((sem) {
+        String targetSem = sems[sem % 2];
+        int targetYear = minYear + (sem / 2).floor();
 
-    Map<String, int> targetTexts = new Map();
-    possibleTargetSemesters.forEach((element) {
-      String targetSem = sems[element % 2];
-      int targetYear = year + (element / 2).floor();
-
-      String targetString =
-          targetSem + ' ' + targetYear.toString() + ' ' + location;
-      targetTexts[targetString] = element;
+        String targetString =
+            targetSem + ' ' + targetYear.toString() + ' ' + location;
+        targetTexts[targetString] = {location: sem};
+      });
     });
 
     int index = -1;
@@ -118,23 +124,38 @@ class TargetExamListService {
     );
   }
 
+  /// Get the lowest year from the table data
+  /// [allData] the data for all modules of the user.
+  /// returns an [int]
+  int _findMinYear(TableData allData) {
+    int minYear = new DateTime.now().year;
+
+    for (var zeile in allData.modules["0"]) {
+      if (zeile.jahr < minYear) {
+        minYear = zeile.jahr;
+      }
+    }
+
+    return minYear;
+  }
+
   /// Move exam to selected semester.
   /// [examName] the name of the exam to be moved.
   /// [semester] the semester where the exam is to be moved to.
   /// [ctx] the building context.
   /// closes the [modalBottomSheet]
-  void moveExam(String examName, int semester, BuildContext ctx) {
-    TableData fullData =
-        Provider.of<TableDataProvider>(ctx, listen: false).tableData;
+  void moveExam(String examName, Map<String, int> examData, BuildContext ctx) {
+    ExamsProcessed exams =
+        Provider.of<TableDataProvider>(ctx, listen: false).processedExams;
 
-    for (var zeile in fullData.exams["0"]) {
-      if (zeile.pruefung == examName) {
-        zeile.vorschlag = semester;
+    exams.exams.forEach((pruefung, exam) {
+      if (pruefung == examName) {
+        exam.movedTo = examData.values.first;
+        exam.ort = examData.keys.first;
       }
-    }
+    });
 
-    Provider.of<TableDataProvider>(ctx, listen: false).manipulatedTableData =
-        fullData;
+    Provider.of<TableDataProvider>(ctx, listen: false).processedExams = exams;
 
     Navigator.of(ctx).pop();
   }

@@ -26,3 +26,15 @@ class ExamData {
   int kreditpunkte;
   String ort;
 }
+
+class ExamsProcessed {
+  Map<String, ExamProcessed> exams;
+}
+
+class ExamProcessed {
+  String pruefung;
+  List<String> veranstaltungen;
+  int vorschlag;
+  int movedTo = 0;
+  String ort;
+}
