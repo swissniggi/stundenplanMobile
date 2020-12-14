@@ -36,11 +36,11 @@ class _TargetScrollViewState extends State<TargetScrollView> {
       'Freitag'
     ];
 
-    List<dynamic> data = widget.possibleTargets["0"];
+    List<dynamic> possibleModulesData = widget.possibleTargets["0"];
     List<List<Pointer>> pointer = Pointers.pointers;
-    List<String> targetModuleNames = new List();
+    List<Map<String, int>> targetModuleNames = new List();
 
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < possibleModulesData.length; i++) {
       for (var j = 0; j < pointer[i].length; j++) {
         pointer[i][j].content.forEach((key, value) {
           if (!value) {
@@ -48,9 +48,10 @@ class _TargetScrollViewState extends State<TargetScrollView> {
             String year = yearAndSemAndLoc[0];
             String sem = yearAndSemAndLoc[1];
             String location = yearAndSemAndLoc[2];
-            String dayIndex = data[i]['Wochentag'];
-            String timeSlot = data[i]['Beginn'];
-            String day = weekDays[int.parse(data[i]['Wochentag']) - 1];
+            String dayIndex = possibleModulesData[i]['Wochentag'];
+            String timeSlot = possibleModulesData[i]['Beginn'];
+            String day =
+                weekDays[int.parse(possibleModulesData[i]['Wochentag']) - 1];
             String possibleId = dayIndex +
                 '.' +
                 timeSlot +
@@ -61,13 +62,29 @@ class _TargetScrollViewState extends State<TargetScrollView> {
                 '.' +
                 year;
 
-            if (possibleId != Cells.selectedCell.id) {
-              String text = '$location, $sem $year, am $day um $timeSlot:00';
-              if (buttonTexts.indexOf(text) == -1) {
-                buttonTexts.add(text);
-                targetModuleNames.add(data[i]['Modul']);
+            Cells.allCells.forEach((cell) {
+              List<String> cellIdParts = cell.id.split('.');
+              String cutId = cellIdParts[0] +
+                  '.' +
+                  cellIdParts[1] +
+                  '.' +
+                  cellIdParts[2] +
+                  '.' +
+                  cellIdParts[3] +
+                  '.' +
+                  cellIdParts[4];
+
+              if (cutId == possibleId && cell.childText == '') {
+                String text = '$location, $sem $year, am $day um $timeSlot:00';
+                if (buttonTexts.indexOf(text) == -1) {
+                  buttonTexts.add(text);
+
+                  targetModuleNames.add({
+                    possibleModulesData[i]['Modul']: int.parse(cellIdParts[5])
+                  });
+                }
               }
-            }
+            });
           }
         });
       }
@@ -100,30 +117,48 @@ class _TargetScrollViewState extends State<TargetScrollView> {
 
   /// Move cell to wanted position in the table.
   /// [buttonText] the text displayed on the pressed button
-  /// [moduleName] the name of the targeted module
-  void _moveCell(String buttonText, String moduleName) {
+  /// [moduleNameAndProp] the name of the targeted module
+  void _moveCell(String buttonText, Map<String, int> moduleNameAndProp) {
+    TableDataProvider tableDataProvider =
+        Provider.of<TableDataProvider>(context, listen: false);
     TableContainer selected = Cells.selectedCell; // here it comes from
     TableContainer targetCell = _getTargetCell(buttonText); // here it goes to
 
     String targetId = targetCell.id;
     List<String> targetIdParts = targetId.split(".");
 
-    TableData data =
-        Provider.of<TableDataProvider>(context, listen: false).tableData;
+    TableData data = tableDataProvider.tableData;
 
     for (var modulZeile in data.modules["0"]) {
       if (modulZeile.veranstaltung == selected.childText) {
-        modulZeile.veranstaltung = moduleName;
+        int newProp = moduleNameAndProp.values.first;
+
+        modulZeile.veranstaltung = moduleNameAndProp.keys.first;
         modulZeile.wochentag = int.parse(targetIdParts[0]);
         modulZeile.beginn = int.parse(targetIdParts[1]);
+        modulZeile.ende = int.parse(targetIdParts[1]) + 2;
         modulZeile.ort = targetIdParts[2];
         modulZeile.semester = targetIdParts[3];
         modulZeile.jahr = int.parse(targetIdParts[4]);
+        modulZeile.vorschlag = newProp;
+
+        ExamsProcessed exams = tableDataProvider.processedExams;
+        exams.exams.forEach((name, exam) {
+          if (exam.veranstaltungen.contains(moduleNameAndProp)) {
+            if (exam.vorschlag < newProp) {
+              exam.vorschlag = newProp;
+
+              if (exam.movedTo > 0 && exam.movedTo < newProp) {
+                exam.movedTo = newProp;
+              }
+            }
+          }
+        });
+        tableDataProvider.processedExams = exams;
       }
     }
 
-    Provider.of<TableDataProvider>(context, listen: false)
-        .manipulatedTableData = data;
+    tableDataProvider.manipulatedTableData = data;
 
     Navigator.of(context).pop();
   }
@@ -178,7 +213,8 @@ class _TargetScrollViewState extends State<TargetScrollView> {
       if (currentCell.id.contains(targetId) &&
           text.contains(currentCellIdParts[1]) &&
           text.contains(currentCellIdParts[2]) &&
-          text.contains(currentCellIdParts[3])) {
+          text.contains(currentCellIdParts[3]) &&
+          text.contains(currentCellIdParts[4])) {
         targetCell = currentCell;
         break;
       }

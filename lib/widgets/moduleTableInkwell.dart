@@ -21,6 +21,9 @@ class ModuleTableInkwell {
   /// The semester of the current table.
   final String sem;
 
+  /// The semester index of the current table.
+  final int semIndex;
+
   /// The year of the current table.
   final String year;
 
@@ -28,7 +31,7 @@ class ModuleTableInkwell {
   final List<Pointer> pointerList;
 
   ModuleTableInkwell(this.ctx, this.tableData, this.colors, this.location,
-      this.sem, this.year, this.pointerList);
+      this.sem, this.semIndex, this.year, this.pointerList);
 
   /// Creates a [List] of [InkWell]s either empty
   /// or containing the data of the designated module.
@@ -42,11 +45,11 @@ class ModuleTableInkwell {
       String sem = this.sem;
       String location = this.location;
       int type = 0;
+      int prop = semIndex;
 
       if (tableData.containsKey(pointerList[i].id)) {
         hasContent = true;
         module = tableData[pointerList[i].id]['name'];
-        // year = tableData[pointerList[i].id]['year'].toString();
         sem = tableData[pointerList[i].id]['sem'];
         location = tableData[pointerList[i].id]['location'];
         type = tableData[pointerList[i].id]['typ'];
@@ -74,7 +77,9 @@ class ModuleTableInkwell {
               '.' +
               sem +
               '.' +
-              year.toString(),
+              year.toString() +
+              '.' +
+              prop.toString(),
         ),
       );
 

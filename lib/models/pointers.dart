@@ -12,11 +12,11 @@ class Pointer {
 class Pointers {
   static List<List<Pointer>> pointers = [
     [
-      new Pointer('1.8'),
-      new Pointer('2.8'),
-      new Pointer('3.8'),
-      new Pointer('4.8'),
-      new Pointer('5.8'),
+      new Pointer('1.08'),
+      new Pointer('2.08'),
+      new Pointer('3.08'),
+      new Pointer('4.08'),
+      new Pointer('5.08'),
     ],
     [
       new Pointer('1.10'),
