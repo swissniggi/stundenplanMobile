@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:optimized_cached_image/image_cache_manager.dart';
+import 'package:optimized_cached_image/widgets.dart';
 
 import '../providers/webview_provider.dart';
 import '../providers/user_provider.dart';
@@ -118,7 +120,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ? AssetImage('assets/img/blank-profile-picture.png')
                           : profilePictureLocal != null
                               ? FileImage(profilePictureLocal)
-                              : NetworkImage(profilePictureExternal),
+                              : OptimizedCacheImageProvider(
+                                  profilePictureExternal),
                     ),
                     Text(
                       '$salutation \n$username',
