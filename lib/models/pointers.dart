@@ -4,8 +4,14 @@ class Pointer {
 
   Pointer(this.id);
 
+  /// Getter for [_content].
   Map<String, bool> get content {
     return this._content;
+  }
+
+  /// Setter for [_content]. User for reset only.
+  set content(Map<String, bool> content) {
+    this._content = content;
   }
 }
 
@@ -54,4 +60,12 @@ class Pointers {
       new Pointer('5.18')
     ]
   ];
+
+  static resetPointers() {
+    Pointers.pointers.forEach((List<Pointer> pointerList) {
+      pointerList.forEach((Pointer pointer) {
+        pointer.content = new Map();
+      });
+    });
+  }
 }

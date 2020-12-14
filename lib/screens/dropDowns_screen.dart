@@ -1,3 +1,4 @@
+import 'package:NAWI/models/pointers.dart';
 import 'package:NAWI/screens/examTables_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -147,6 +148,7 @@ class _DropDownsScreenState extends State<DropDownsScreen> {
         TableDataProvider tableDataProvider =
             Provider.of<TableDataProvider>(context, listen: false);
         tableDataProvider.reset();
+        Pointers.resetPointers();
         tableDataProvider.newTableData = response;
         tableDataProvider.isCatalog = isCatalog;
 
