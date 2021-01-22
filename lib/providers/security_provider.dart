@@ -58,15 +58,8 @@ class SecurityProvider with ChangeNotifier {
   /// [ctx] the given [BuildContext].
   /// redirects to the main screen.
   Future logoutUser(BuildContext ctx) async {
-    List<String> websites =
-        Provider.of<WebViewProvider>(ctx, listen: false).addedUrls;
     var body = new Map<String, dynamic>();
     body["function"] = 'logoutUser';
-
-    if (websites.isNotEmpty) {
-      body["username"] = Provider.of<UserProvider>(ctx, listen: false).username;
-      body["websites"] = jsonEncode(websites);
-    }
 
     await XmlRequestService.createPost(body, ctx);
 

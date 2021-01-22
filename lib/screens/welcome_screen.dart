@@ -37,10 +37,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         WelcomeCarouselItem newWebView = WelcomeCarouselItem(
           WelcomeWebView(ValueKey(externalSource), externalSource),
         );
-        Provider.of<WebViewProvider>(context, listen: false).newUrl =
-            externalSource;
-        Provider.of<WebViewProvider>(context, listen: false).newListitem =
-            newWebView;
+        WebViewProvider provider =
+            Provider.of<WebViewProvider>(context, listen: false);
+        provider.newUrl = externalSource;
+        provider.newListitem = newWebView;
+        provider.saveWebsites(context);
       });
     }
   }

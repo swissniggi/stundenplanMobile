@@ -42,6 +42,25 @@ class WebViewProvider with ChangeNotifier {
     }
   }
 
+  Future saveWebsites(BuildContext ctx) async {
+    String username = Provider.of<UserProvider>(ctx, listen: false).username;
+
+    var body = new Map<String, dynamic>();
+    body["function"] = 'saveWebsites';
+    body["username"] = username;
+    body["websites"] = this.addedUrls;
+
+    Map<String, dynamic> response =
+        await XmlRequestService.createPost(body, ctx);
+
+    if (response['sessionTimedOut'] == true) {
+      Provider.of<SecurityProvider>(ctx, listen: false).logoutOnTimeOut(ctx);
+    } else if (response.keys.contains('message')) {
+      Provider.of<SecurityProvider>(ctx, listen: false)
+          .showErrorDialog(ctx, response['message']);
+    }
+  }
+
   /// Setter for [_addesSites] before the [WelcomeScreen] gets loaded.
   set initialListItem(WelcomeCarouselItem newListItem) {
     this._addedSites.insert(0, newListItem);
